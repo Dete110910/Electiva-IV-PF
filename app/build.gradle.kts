@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.example.electivaiv"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.electivaiv"
