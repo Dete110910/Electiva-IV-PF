@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">ElectivaIV</string>
+
+    <!-- Sing Up -->
+    <string name="create_account">Create account</string>
+    <string name="user_name">Name</string>
+    <string name="user_last_name">Last name</string>
+
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>
