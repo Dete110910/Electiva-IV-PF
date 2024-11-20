@@ -7,6 +7,9 @@
     <string name="user_last_name">Last name</string>
 
 
+    <!-- Login -->
+    <string name="login">Login</string>
+
     <string name="email">Email</string>
     <string name="password">Password</string>
 </resources>

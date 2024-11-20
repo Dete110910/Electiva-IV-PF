@@ -24,7 +24,7 @@ class SingUpViewModel @Inject constructor() : ViewModel() {
         uiState.value = uiState.value.copy(password = newValue)
     }
 
-    fun onRepeatPasswordChange(newValue: String) {
+    fun onConfirmPasswordChange(newValue: String) {
         uiState.value = uiState.value.copy(confirmPassword = newValue)
     }
 
