@@ -44,12 +44,12 @@ fun SingUpScreen(
     ) {
         TextTitle("Registrarse", Modifier.textTitleModifier().align(Alignment.CenterHorizontally))
         BasicField(AppText.user_name, uiState.name, viewModel::onNameChange, fieldModifier)
-        BasicField(AppText.user_last_name, uiState.lastName, viewModel::onNameChange, fieldModifier)
+        BasicField(AppText.user_last_name, uiState.lastName, viewModel::onLastNameChange, fieldModifier)
         EmailField(uiState.email, viewModel::onEmailChange, fieldModifier)
-        PasswordField(uiState.password, viewModel::onPasswordChange, fieldModifier)
-        PasswordField(uiState.confirmPassword, viewModel::onConfirmPasswordChange, fieldModifier)
+        PasswordField(AppText.password,uiState.password, viewModel::onPasswordChange, fieldModifier)
+        PasswordField(AppText.confirm_password, uiState.confirmPassword, viewModel::onConfirmPasswordChange, fieldModifier)
         BasicButton(AppText.create_account, Modifier.basicButton()){
-            //viewModel.onSignUpClick()
+            viewModel.onSignUpClick(openScreen)
         }
         BasicButton(AppText.cancel, Modifier.basicButton()){
             openScreen(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
