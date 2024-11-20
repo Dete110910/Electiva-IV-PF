@@ -1,5 +1,6 @@
 package com.example.electivaiv.ui.screens.login
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,11 +18,13 @@ import com.example.electivaiv.common.ext.basicButton
 import com.example.electivaiv.common.ext.fieldModifier
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 import com.example.electivaiv.common.ext.textTitleModifier
+import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.R.string as AppText
 
 
 @Composable
 fun LoginScreen(
+    openScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
@@ -39,6 +42,9 @@ fun LoginScreen(
         PasswordField(uiState.password, viewModel::onPasswordChange, fieldModifier)
         BasicButton(AppText.login, Modifier.basicButton()) {
         }
+        BasicButton(AppText.register, Modifier.basicButton()) {
+            openScreen(ScreensRoutes.SignUpScreen.route, ScreensRoutes.LoginScreen.route)
+        }
     }
 }
 
@@ -46,10 +52,10 @@ fun LoginScreen(
 @Composable
 fun PreviewSignUpScreen() {
     val viewModel: LoginViewModel = hiltViewModel()
+    val s = "a"
     ElectivaIVTheme {
         LoginScreen(
-            modifier = Modifier,
-            viewModel
+            openScreen = {route, popUp -> }
         )
     }
 }

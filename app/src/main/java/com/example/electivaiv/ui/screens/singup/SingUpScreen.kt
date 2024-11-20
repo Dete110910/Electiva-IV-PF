@@ -1,5 +1,6 @@
 package com.example.electivaiv.ui.screens.singup
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,12 +20,14 @@ import com.example.electivaiv.common.composable.PasswordField
 import com.example.electivaiv.common.composable.TextTitle
 import com.example.electivaiv.common.ext.*
 import com.example.electivaiv.common.ext.textTitleModifier
+import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 import com.example.electivaiv.R.string as AppText
 
 
 @Composable
 fun SingUpScreen(
+    openScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SingUpViewModel = hiltViewModel()
 ) {
@@ -46,7 +49,11 @@ fun SingUpScreen(
         PasswordField(uiState.password, viewModel::onPasswordChange, fieldModifier)
         PasswordField(uiState.confirmPassword, viewModel::onConfirmPasswordChange, fieldModifier)
         BasicButton(AppText.create_account, Modifier.basicButton()){
-
+            //viewModel.onSignUpClick()
+        }
+        BasicButton(AppText.cancel, Modifier.basicButton()){
+            openScreen(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
+            Log.d("TEST--", "Vamos a login")
         }
     }
 }
@@ -57,8 +64,7 @@ fun PreviewSignUpScreen() {
     val viewModel: SingUpViewModel = hiltViewModel()
     ElectivaIVTheme {
         SingUpScreen(
-            modifier = Modifier,
-            viewModel
+            openScreen = {route, popUp ->}
         )
     }
 }

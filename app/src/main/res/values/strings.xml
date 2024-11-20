@@ -9,7 +9,14 @@
 
     <!-- Login -->
     <string name="login">Login</string>
+    <string name="register">Register</string>
+
 
     <string name="email">Email</string>
     <string name="password">Password</string>
+
+    <!-- General -->
+    <string name="cancel">Cancel</string>
+
+
 </resources>

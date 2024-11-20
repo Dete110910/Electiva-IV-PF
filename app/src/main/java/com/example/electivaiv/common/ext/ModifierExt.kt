@@ -16,5 +16,5 @@ fun Modifier.basicButton(): Modifier {
 }
 
 fun Modifier.textTitleModifier(): Modifier {
-    return this.height(100.dp).padding(30.dp, 40.dp)
+    return this.height(100.dp).padding(30.dp, 30.dp)
 }
