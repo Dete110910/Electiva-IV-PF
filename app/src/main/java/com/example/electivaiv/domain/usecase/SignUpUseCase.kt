@@ -7,7 +7,12 @@ class SignUpUseCase @Inject constructor(
     private val authenticationService: AuthenticationService
 ) {
 
-    suspend fun invoke(email: String, password: String){
-        authenticationService.signUp(email, password)
+    suspend fun invoke(email: String, password: String): Boolean {
+        val uid = authenticationService.signUp(email, password)
+
+        return if (uid != null)
+            true
+        else
+            false
     }
 }

@@ -12,7 +12,11 @@ class AuthenticationService @Inject constructor(
         return try {
             val account =
                 firebaseClient.firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            return if (account.user != null) { account.user?.uid } else { null }
+            return if (account.user != null) {
+                account.user?.uid
+            } else {
+                null
+            }
         } catch (e: Exception) {
             Log.d("TEST--", "Sign Up Error: ${e.message}")
             null

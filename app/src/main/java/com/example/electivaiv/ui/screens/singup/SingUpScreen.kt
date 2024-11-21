@@ -27,7 +27,7 @@ import com.example.electivaiv.R.string as AppText
 
 @Composable
 fun SingUpScreen(
-    openScreen: (String, String) -> Unit,
+    openAndPopUp: (String, String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SingUpViewModel = hiltViewModel()
 ) {
@@ -49,10 +49,10 @@ fun SingUpScreen(
         PasswordField(AppText.password,uiState.password, viewModel::onPasswordChange, fieldModifier)
         PasswordField(AppText.confirm_password, uiState.confirmPassword, viewModel::onConfirmPasswordChange, fieldModifier)
         BasicButton(AppText.create_account, Modifier.basicButton()){
-            viewModel.onSignUpClick(openScreen)
+            viewModel.onSignUpClick(openAndPopUp)
         }
         BasicButton(AppText.cancel, Modifier.basicButton()){
-            openScreen(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
+            openAndPopUp(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
             Log.d("TEST--", "Vamos a login")
         }
     }
@@ -61,10 +61,9 @@ fun SingUpScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewSignUpScreen() {
-    val viewModel: SingUpViewModel = hiltViewModel()
     ElectivaIVTheme {
         SingUpScreen(
-            openScreen = {route, popUp ->}
+            openAndPopUp = { route, popUp ->}
         )
     }
 }

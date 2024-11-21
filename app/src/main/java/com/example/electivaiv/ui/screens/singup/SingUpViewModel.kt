@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.electivaiv.common.ext.isValidPassword
 import com.example.electivaiv.common.ext.isValidEmail
 import com.example.electivaiv.domain.usecase.SignUpUseCase
+import com.example.electivaiv.ui.navigation.ScreensRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,6 +45,14 @@ class SingUpViewModel @Inject constructor(
     }
 
     fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
+        if(uiState.value.name.trim() == ""){
+            Log.d("TEST--", "Enter your name")
+            return
+        }
+        if(uiState.value.lastName.trim() == ""){
+            Log.d("TEST--", "Enter your last name")
+            return
+        }
         if (!email.isValidEmail()) {
             Log.d("TEST--", "Email must be a valid email")
             return
@@ -53,16 +62,16 @@ class SingUpViewModel @Inject constructor(
             Log.d("TEST--", "The password must be at least 6 characters length")
             return
         }
-        //val confirmPassword = uiState.value.confirmPassword
-        if (password == confirmPassword) {
 
+        if (password != uiState.value.confirmPassword) {
             Log.d("TEST--", "Passwords do not match")
-            Log.d("TEST--", "Passwords: ${password}")
-            Log.d("TEST--", "Passwords2: ${confirmPassword}")
             return
         }
         viewModelScope.launch {
-            signUpUseCase.invoke(email, password)
+            if(signUpUseCase.invoke(email, password)){
+                openAndPopUp(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
+            }else
+                Log.d("TEST--", "Error signing up")
         }
     }
 }
