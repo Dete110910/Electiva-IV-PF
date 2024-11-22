@@ -53,7 +53,6 @@ fun SingUpScreen(
         }
         BasicButton(AppText.cancel, Modifier.basicButton()){
             openAndPopUp(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
-            Log.d("TEST--", "Vamos a login")
         }
     }
 }

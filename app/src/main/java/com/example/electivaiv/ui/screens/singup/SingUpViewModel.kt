@@ -4,7 +4,12 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.electivaiv.common.Constants.Companion.ENTER_LAST_NAME_MESSAGE
+import com.example.electivaiv.common.Constants.Companion.ENTER_NAME_MESSAGE
+import com.example.electivaiv.common.Constants.Companion.MINIMUM_PASSWORD_LENGTH_MESSAGE
+import com.example.electivaiv.common.Constants.Companion.PASSWORDS_DO_NOT_MATCH_MESSAGE
 import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
+import com.example.electivaiv.common.Constants.Companion.VALID_EMAIL_MESSAGE
 import com.example.electivaiv.common.ext.isValidPassword
 import com.example.electivaiv.common.ext.isValidEmail
 import com.example.electivaiv.domain.model.User
@@ -47,33 +52,39 @@ class SingUpViewModel @Inject constructor(
     }
 
     fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
-        if(uiState.value.name.trim() == ""){
-            Log.d(TEST_MESSAGE, "Enter your name")
+        if (uiState.value.name.trim() == "") {
+            Log.d(TEST_MESSAGE, ENTER_NAME_MESSAGE)
             return
         }
-        if(uiState.value.lastName.trim() == ""){
-            Log.d(TEST_MESSAGE, "Enter your last name")
+        if (uiState.value.lastName.trim() == "") {
+            Log.d(TEST_MESSAGE, ENTER_LAST_NAME_MESSAGE)
             return
         }
         if (!email.isValidEmail()) {
-            Log.d(TEST_MESSAGE, "Email must be a valid email")
+            Log.d(TEST_MESSAGE, VALID_EMAIL_MESSAGE)
             return
         }
 
         if (!password.isValidPassword()) {
-            Log.d(TEST_MESSAGE, "The password must be at least 6 characters length")
+            Log.d(TEST_MESSAGE, MINIMUM_PASSWORD_LENGTH_MESSAGE)
             return
         }
 
         if (password != uiState.value.confirmPassword) {
-            Log.d(TEST_MESSAGE, "Passwords do not match")
+            Log.d(TEST_MESSAGE, PASSWORDS_DO_NOT_MATCH_MESSAGE)
             return
         }
-        val user = User(uiState.value.name,uiState.value.lastName, uiState.value.email, uiState.value.password, "")
+        val user = User(
+            uiState.value.name,
+            uiState.value.lastName,
+            uiState.value.email,
+            uiState.value.password,
+            ""
+        )
         viewModelScope.launch {
-            if(signUpUseCase.invoke(user)){
+            if (signUpUseCase.invoke(user)) {
                 openAndPopUp(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
-            }else
+            } else
                 Log.d(TEST_MESSAGE, "Error signing up")
         }
     }
