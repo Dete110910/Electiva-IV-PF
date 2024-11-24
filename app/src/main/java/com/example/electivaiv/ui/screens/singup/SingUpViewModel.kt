@@ -16,6 +16,8 @@ import com.example.electivaiv.domain.model.User
 import com.example.electivaiv.domain.usecase.SignUpUseCase
 import com.example.electivaiv.ui.navigation.ScreensRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +28,9 @@ class SingUpViewModel @Inject constructor(
 
     var uiState = mutableStateOf(SingUpUiState())
         private set
+
+    private val _userCreated = MutableStateFlow<User?>(null)
+    val userCreated: StateFlow<User?> = _userCreated
 
     private val email get() = uiState.value.email
     private val password get() = uiState.value.password
@@ -82,7 +87,10 @@ class SingUpViewModel @Inject constructor(
             ""
         )
         viewModelScope.launch {
-            if (signUpUseCase.invoke(user)) {
+            val uid = signUpUseCase.invoke(user.email, user.password)
+            if (uid != null) {
+                user.uid = uid
+                _userCreated.value = user
                 openAndPopUp(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
             } else
                 Log.d(TEST_MESSAGE, "Error signing up")

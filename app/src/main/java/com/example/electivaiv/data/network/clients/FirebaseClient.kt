@@ -12,5 +12,5 @@ import javax.inject.Singleton
 class FirebaseClient @Inject constructor() {
     val firebaseAuth: FirebaseAuth = Firebase.auth
     val firestore = Firebase.firestore
-    val store = Firebase.storage("")
+    val store = Firebase.storage("gs://electiva-iv-593f3.firebasestorage.app")
 }

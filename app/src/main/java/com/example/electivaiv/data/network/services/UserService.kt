@@ -18,7 +18,8 @@ class UserService @Inject constructor(
             "email" to user.email,
             "lastName" to user.lastName,
             "name" to user.name,
-            "profilePhoto" to user.profilePhoto
+            "profilePhoto" to user.profilePhoto,
+            "uid" to user.uid
         )
         firebaseClient.firestore.collection(USERS_COLLECTION).add(userData).addOnSuccessListener {
             Log.d(TEST_MESSAGE, USER_SUCCESSFULLY_REGISTERED_MESSAGE)
