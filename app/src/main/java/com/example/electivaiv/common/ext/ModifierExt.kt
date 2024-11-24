@@ -12,7 +12,7 @@ fun Modifier.fieldModifier(): Modifier {
 }
 
 fun Modifier.basicButton(): Modifier {
-    return this.fillMaxWidth().padding(16.dp, 8.dp)
+    return this.fillMaxWidth().padding(20.dp, 4.dp, 20.dp, 0.dp)
 }
 
 fun Modifier.textTitleModifier(): Modifier {

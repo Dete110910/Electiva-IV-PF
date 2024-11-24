@@ -1,6 +1,7 @@
 package com.example.electivaiv.ui.navigation
 
 sealed class ScreensRoutes(val route: String) {
-    object SignUpScreen : ScreensRoutes("sing_up_routes")
-    object LoginScreen : ScreensRoutes("login_routes")
+    object SignUpScreen : ScreensRoutes("SignUpScreen")
+    object LoginScreen : ScreensRoutes("LoginScreen")
+    object MainScreen : ScreensRoutes("MainScreen")
 }

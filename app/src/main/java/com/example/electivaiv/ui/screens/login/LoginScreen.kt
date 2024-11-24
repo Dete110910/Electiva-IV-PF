@@ -39,7 +39,7 @@ fun LoginScreen(
     ) {
         TextTitle("Ratattouille", Modifier.textTitleModifier().align(Alignment.CenterHorizontally))
         EmailField(uiState.email, viewModel::onEmailChange, fieldModifier)
-        PasswordField(uiState.password, viewModel::onPasswordChange, fieldModifier)
+        PasswordField(AppText.password, uiState.password, viewModel::onPasswordChange, fieldModifier)
         BasicButton(AppText.login, Modifier.basicButton()) {
         }
         BasicButton(AppText.register, Modifier.basicButton()) {

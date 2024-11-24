@@ -53,8 +53,8 @@ fun EmailField(value: String, onNewValue: (String) -> Unit, modifier: Modifier =
 }
 
 @Composable
-fun PasswordField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
-    PasswordField(value, AppText.password, onNewValue, modifier)
+fun PasswordField(placeHolder: Int, value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
+    PasswordField(value, placeHolder, onNewValue, modifier)
 }
 
 @Composable

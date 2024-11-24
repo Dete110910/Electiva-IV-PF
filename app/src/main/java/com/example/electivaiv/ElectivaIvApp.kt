@@ -1,12 +1,9 @@
 package com.example.electivaiv
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.electivaiv.ui.screens.singup.SingUpScreen
-import com.example.electivaiv.ui.screens.singup.SingUpViewModel
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -47,7 +44,7 @@ fun AuthNavigation(navController: NavHostController) {
             LoginScreen(
                 openScreen = { route, popUp ->
                     navController.navigate(route) {
-                        popUpTo(popUp) { inclusive = true }
+                            popUpTo(popUp) { inclusive = true }
                     }
                 }
             )
@@ -55,7 +52,7 @@ fun AuthNavigation(navController: NavHostController) {
 
         composable(ScreensRoutes.SignUpScreen.route) {
             SingUpScreen(
-                openScreen = { route, popUp ->
+                openAndPopUp = { route, popUp ->
                     navController.navigate(route) {
                         popUpTo(popUp) { inclusive = true }
                     }

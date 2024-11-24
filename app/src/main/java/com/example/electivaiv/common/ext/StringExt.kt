@@ -1,7 +1,6 @@
 package com.example.electivaiv.common.ext
 
 import android.util.Patterns
-import java.util.regex.Pattern
 
 private const val MIN_PASS_LENGTH = 6
 
