@@ -22,5 +22,16 @@ class LoginUseCase @Inject constructor(
         } else {
             null
         }
+
+    }
+
+    fun getSessionActive(): String? {
+        return userServiceSP.getCurrentUserUid()
+
+    }
+
+    fun getCurrentUserPath(): String? {
+        return userServiceSP.getCurrentUserPath()
+
     }
 }
