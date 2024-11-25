@@ -41,6 +41,7 @@ fun LoginScreen(
         EmailField(uiState.email, viewModel::onEmailChange, fieldModifier)
         PasswordField(AppText.password, uiState.password, viewModel::onPasswordChange, fieldModifier)
         BasicButton(AppText.login, Modifier.basicButton()) {
+            openScreen(ScreensRoutes.MainScreen.route, ScreensRoutes.LoginScreen.route)
         }
         BasicButton(AppText.register, Modifier.basicButton()) {
             openScreen(ScreensRoutes.SignUpScreen.route, ScreensRoutes.LoginScreen.route)

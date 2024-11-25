@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.screens.login.LoginScreen
+import com.example.electivaiv.ui.screens.main.MainScreen
 
 
 @Composable
@@ -41,6 +42,7 @@ fun AuthNavigation(navController: NavHostController) {
         startDestination = ScreensRoutes.LoginScreen.route
     ) {
         composable(ScreensRoutes.LoginScreen.route) {
+
             LoginScreen(
                 openScreen = { route, popUp ->
                     navController.navigate(route) {
@@ -58,6 +60,10 @@ fun AuthNavigation(navController: NavHostController) {
                     }
                 }
             )
+        }
+
+        composable(ScreensRoutes.MainScreen.route) {
+            MainScreen()
         }
     }
 

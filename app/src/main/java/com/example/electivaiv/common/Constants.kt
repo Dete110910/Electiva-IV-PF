@@ -3,6 +3,10 @@ package com.example.electivaiv.common
 class Constants {
 
     companion object {
+        //App
+        const val APP_NAME = "Ratatouille"
+
+        //Firebase
         const val USERS_COLLECTION = "users"
 
         //Messages
