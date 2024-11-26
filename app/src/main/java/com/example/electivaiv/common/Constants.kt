@@ -12,6 +12,7 @@ class Constants {
         const val USERS_COLLECTION = "users"
         const val COMMENTS_COLLECTION = "comments"
         const val UID = "uid"
+        const val NAME = "name"
 
         //Messages
         const val TEST_MESSAGE = "TEST--"

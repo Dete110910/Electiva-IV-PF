@@ -36,9 +36,10 @@ class DataBaseService @Inject constructor(
         list.forEach { postComment ->
             val userQuery = firebaseClient.firestore.collection(Constants.USERS_COLLECTION)
                 .whereEqualTo(Constants.UID, postComment.authorUid).get().await()
-            val commentator = if(!userQuery.isEmpty){
-                userQuery.documents.first().getString(Constants.AUTHOR_NAME) ?: Constants.UNKNOWN_AUTHOR
-            } else{
+            val commentator = if (!userQuery.isEmpty) {
+                userQuery.documents.first().getString(Constants.NAME)
+                    ?: Constants.UNKNOWN_AUTHOR
+            } else {
                 Constants.UNKNOWN_AUTHOR
             }
 
