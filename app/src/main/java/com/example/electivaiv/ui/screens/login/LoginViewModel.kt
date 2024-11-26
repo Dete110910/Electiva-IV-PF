@@ -56,7 +56,7 @@ class LoginViewModel @Inject constructor(
             val result = login(email, password)
             if (result != null) {
                 Log.d(TEST_MESSAGE, "Inicio de sesion correcto")
-                openScreen(ScreensRoutes.HomeScreen.route, ScreensRoutes.LoginScreen.route)
+                openScreen(ScreensRoutes.MainScreen.route, ScreensRoutes.LoginScreen.route)
             } else {
                 Log.d(TEST_MESSAGE, "Error logging in")
             }
@@ -67,7 +67,7 @@ class LoginViewModel @Inject constructor(
         val userUid = loginUseCase.getSessionActive()
         val userPath = loginUseCase.getCurrentUserPath()
         if (userUid != null || userPath != null) {
-            openScreen(ScreensRoutes.HomeScreen.route)
+            openScreen(ScreensRoutes.MainScreen.route)
         }
     }
 

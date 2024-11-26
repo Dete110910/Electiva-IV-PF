@@ -28,7 +28,7 @@ fun HomeScreen(
 
     LaunchedEffect(isCleared) {
         if (!viewModel.isSessionActive()) {
-            openScreen(ScreensRoutes.LoginScreen.route, ScreensRoutes.HomeScreen.route)
+            openScreen(ScreensRoutes.LoginScreen.route, ScreensRoutes.MainScreen.route)
         }
     }
 
@@ -54,9 +54,5 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewSignUpScreen() {
-    ElectivaIVTheme {
-        HomeScreen(
-            openScreen = { route, popUp ->}
-        )
-    }
+
 }

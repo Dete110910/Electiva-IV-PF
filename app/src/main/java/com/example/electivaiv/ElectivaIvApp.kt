@@ -61,14 +61,8 @@ fun AuthNavigation(navController: NavHostController) {
                 }
             )
         }
-        composable(ScreensRoutes.HomeScreen.route) {
-            HomeScreen(
-                openScreen = { route, popUp ->
-                    navController.navigate(route) {
-                        popUpTo(popUp) { inclusive = true }
-                    }
-                }
-            )
+        composable(ScreensRoutes.MainScreen.route) {
+            HomeScreen()
         }
 
     }
