@@ -19,7 +19,7 @@ import com.example.electivaiv.common.ext.textTitleHeaderModifier
 @Composable
 fun Header() {
     ConstraintLayout (
-        modifier = Modifier.headerModifier().height(80.dp).background(Color.Red)
+        modifier = Modifier.headerModifier().height(80.dp)
     ){
         Text(
             modifier = Modifier.textTitleHeaderModifier().height(100.dp),

@@ -5,9 +5,13 @@ class Constants {
     companion object {
         //App
         const val APP_NAME = "Ratatouille"
+        const val EMPTY_STRING = " "
+        const val ZERO = 0
 
         //Firebase
         const val USERS_COLLECTION = "users"
+        const val COMMENTS_COLLECTION = "comments"
+        const val UID = "uid"
 
         //Messages
         const val TEST_MESSAGE = "TEST--"
@@ -18,6 +22,15 @@ class Constants {
         const val VALID_EMAIL_MESSAGE = "El correo no es válido."
         const val ENTER_NAME_MESSAGE = "Ingrese su nombre."
         const val ENTER_LAST_NAME_MESSAGE = "Ingrese su apellido."
+
+        //Comments
+        const val AUTHOR_UID = "authorUid"
+        const val AUTHOR_NAME = "authorName"
+        const val UNKNOWN_AUTHOR = "Desconocido"
+        const val ARRAY_IMAGES= "images"
+        const val RATE = "rate"
+        const val RESTAURANT_NAME = "restaurantName"
+        const val TEXT = "text"
     }
 
 }

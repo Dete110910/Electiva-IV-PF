@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.screens.login.LoginScreen
-import com.example.electivaiv.ui.screens.main.MainScreen
+import com.example.electivaiv.ui.screens.main.HomeScreen
 
 
 @Composable
@@ -63,7 +63,7 @@ fun AuthNavigation(navController: NavHostController) {
         }
 
         composable(ScreensRoutes.MainScreen.route) {
-            MainScreen()
+            HomeScreen()
         }
     }
 
