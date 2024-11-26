@@ -7,10 +7,12 @@ import com.example.electivaiv.common.Constants.Companion.USER_SUCCESSFULLY_REGIS
 import com.example.electivaiv.common.Constants.Companion.USER_UNSUCCESSFULLY_REGISTERED_MESSAGE
 import com.example.electivaiv.data.network.clients.FirebaseClient
 import com.example.electivaiv.domain.model.User
+import com.example.electivaiv.domain.model.UserSP
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserService @Inject constructor(
-    private val firebaseClient: FirebaseClient
+    private val firebaseClient: FirebaseClient,
 ) {
 
     fun saveUserData(user: User) {
@@ -28,4 +30,25 @@ class UserService @Inject constructor(
 
         }
     }
+
+   suspend fun getUserByUid(uid: String): UserSP? {
+    return try {
+        val documents = firebaseClient.firestore.collection(USERS_COLLECTION)
+            .whereEqualTo("uid", uid)
+            .get().await().documents
+
+        if (documents.isNotEmpty()) {
+            val user = documents[0]
+            val path = user.reference.path
+            Log.d(TEST_MESSAGE, "User found: $uid")
+            return UserSP(path, uid)
+        } else {
+            Log.d(TEST_MESSAGE, "No user found with uid: $uid")
+            null
+        }
+    } catch (e: Exception) {
+        Log.d(TEST_MESSAGE, "Error fetching user: ${e.message}")
+        null
+    }
+}
 }
