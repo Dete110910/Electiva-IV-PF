@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,12 @@ fun LoginScreen(
     val uiState by viewModel.uiState
     val fieldModifier = Modifier.fieldModifier()
 
+    LaunchedEffect(Unit) {
+        viewModel.getSessionLocalActive { route ->
+            openScreen(route, ScreensRoutes.LoginScreen.route)
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -41,6 +48,7 @@ fun LoginScreen(
         EmailField(uiState.email, viewModel::onEmailChange, fieldModifier)
         PasswordField(AppText.password, uiState.password, viewModel::onPasswordChange, fieldModifier)
         BasicButton(AppText.login, Modifier.basicButton()) {
+            viewModel.onLoginInClick(openScreen)
         }
         BasicButton(AppText.register, Modifier.basicButton()) {
             openScreen(ScreensRoutes.SignUpScreen.route, ScreensRoutes.LoginScreen.route)
