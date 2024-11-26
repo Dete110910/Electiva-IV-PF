@@ -1,5 +1,6 @@
 package com.example.electivaiv.ui.screens.main
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -109,7 +111,8 @@ fun MainCommentCard(comment: PostComment) {
     Card(
         modifier = Modifier.mainCommentCard(),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+        border = BorderStroke(0.5.dp, color = Color.Black)
     ) {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize()
@@ -133,7 +136,8 @@ fun MainCommentCard(comment: PostComment) {
                     start.linkTo(profileImage.end, 10.dp)
                 },
                 text = "${comment.authorName} dijo sobre ${comment.restaurantName}",
-                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                fontSize = 17.sp,
             )
 
             RatingStars(comment.rate.toDouble(), Modifier.constrainAs(commentRate) {
@@ -144,12 +148,13 @@ fun MainCommentCard(comment: PostComment) {
             Text(
                 modifier = Modifier
                     .constrainAs(commentDescription) {
-                        top.linkTo(profileImage.bottom)
+                        top.linkTo(profileImage.bottom, 10.dp)
                         start.linkTo(profileImage.start)
                     }
                     .padding(10.dp),
                 text = comment.text,
-                maxLines = 4,
+                fontSize = 15.sp,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
         }

@@ -45,5 +45,5 @@ fun Modifier.mainCommentCard(): Modifier {
     return this
         .padding(6.dp, 2.dp, 6.dp, 2.dp)
         .fillMaxWidth()
-        .height(200.dp)
+        .height(120.dp)
 }
