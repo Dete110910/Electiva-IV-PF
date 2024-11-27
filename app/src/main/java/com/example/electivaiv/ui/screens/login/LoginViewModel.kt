@@ -9,14 +9,12 @@ import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
 import com.example.electivaiv.common.Constants.Companion.VALID_EMAIL_MESSAGE
 import com.example.electivaiv.common.ext.isValidEmail
 import com.example.electivaiv.common.ext.isValidPassword
-import com.example.electivaiv.common.messages.ShowToastComposable
 import com.example.electivaiv.data.local.SharedPreferences
 import com.example.electivaiv.domain.usecase.LoginUseCase
 import com.example.electivaiv.ui.navigation.ScreensRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -41,7 +39,9 @@ class LoginViewModel @Inject constructor(
     suspend fun login(email: String, password: String): Any? =
         loginUseCase.invoke(email, password)
 
-    fun onLoginInClick(openScreen: (String, String) -> Unit) {
+    fun onLoginInClick(
+        openScreen: (String, String) -> Unit, onAuthenticatedChange: (Boolean) -> Unit
+    ) {
         if (!email.isValidEmail()) {
             Log.d(TEST_MESSAGE, VALID_EMAIL_MESSAGE)
             return
@@ -56,7 +56,7 @@ class LoginViewModel @Inject constructor(
             val result = login(email, password)
             if (result != null) {
                 Log.d(TEST_MESSAGE, "Inicio de sesion correcto")
-                openScreen(ScreensRoutes.MainScreen.route, ScreensRoutes.LoginScreen.route)
+                onAuthenticatedChange(true)
             } else {
                 Log.d(TEST_MESSAGE, "Error logging in")
             }
@@ -72,10 +72,10 @@ class LoginViewModel @Inject constructor(
     }
 
     fun isSessionActive(): Boolean {
-    val userUid = sharedPreferences.sharedPreferences.getString("user_uid", null)
-    val userPath = sharedPreferences.sharedPreferences.getString("user_path", null)
-    return userUid != null && userPath != null
-}
+        val userUid = sharedPreferences.sharedPreferences.getString("user_uid", null)
+        val userPath = sharedPreferences.sharedPreferences.getString("user_path", null)
+        return userUid != null && userPath != null
+    }
 
     // Funciones para actualizar SharedPreferences
     fun updateUserUid(newUid: String) {
