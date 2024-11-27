@@ -189,7 +189,7 @@ fun RatingStars(rating: Double, modifier: Modifier) {
             Icon(
                 imageVector = Icons.Outlined.Star,
                 contentDescription = "Empty Star",
-                tint = Color.Yellow
+                tint = Color.Gray
             )
         }
     }
