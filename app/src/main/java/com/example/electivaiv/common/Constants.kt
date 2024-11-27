@@ -3,7 +3,16 @@ package com.example.electivaiv.common
 class Constants {
 
     companion object {
+        //App
+        const val APP_NAME = "Ratatouille"
+        const val EMPTY_STRING = " "
+        const val ZERO = 0
+
+        //Firebase
         const val USERS_COLLECTION = "users"
+        const val COMMENTS_COLLECTION = "comments"
+        const val UID = "uid"
+        const val NAME = "name"
 
         //Messages
         const val TEST_MESSAGE = "TEST--"
@@ -19,6 +28,15 @@ class Constants {
         const val ENTER_CONFIRM_LOGIN_IN_MESSAGE = "Inicio de sesion correcto."
         const val ENTER_CONFIRM_LOGIN_IN_MESSAGE_ERROR = "Inicio de sesion incorrecto."
         const val USER_UNSUCCESSFULLY_LOGIN_MESSAGE = "Error al iniciar sesion."
+
+        //Comments
+        const val AUTHOR_UID = "authorUid"
+        const val AUTHOR_NAME = "authorName"
+        const val UNKNOWN_AUTHOR = "Desconocido"
+        const val ARRAY_IMAGES= "images"
+        const val RATE = "rate"
+        const val RESTAURANT_NAME = "restaurantName"
+        const val TEXT = "text"
     }
 
 }

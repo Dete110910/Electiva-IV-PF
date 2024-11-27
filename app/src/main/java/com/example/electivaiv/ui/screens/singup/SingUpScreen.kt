@@ -1,6 +1,5 @@
 package com.example.electivaiv.ui.screens.singup
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
 import com.example.electivaiv.common.composable.BasicButton
 import com.example.electivaiv.common.composable.BasicField
 import com.example.electivaiv.common.composable.EmailField
