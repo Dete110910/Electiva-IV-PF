@@ -1,6 +1,10 @@
 package com.example.electivaiv.data.network.services
 
 import android.util.Log
+import com.example.electivaiv.common.Constants.Companion.DATA_REGISTERED_SUCCESSFULLY
+import com.example.electivaiv.common.Constants.Companion.DATA_REGISTERED_UNSUCCESSFULLY
+import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
+import com.example.electivaiv.common.Constants.Companion.USER_SUCCESSFULLY_REGISTERED_MESSAGE
 import com.example.electivaiv.data.network.clients.FirebaseClient
 import com.example.electivaiv.domain.model.PostComment
 import com.google.firebase.firestore.DocumentSnapshot
@@ -70,5 +74,24 @@ class DataBaseService @Inject constructor(
             text,
             images
         )
+    }
+
+    suspend fun saveComment(comment: PostComment): Boolean{
+        return try {
+            val commentData = hashMapOf(
+                "authorName" to comment.authorName,
+                "authorUid" to comment.authorUid,
+                "images" to comment.images,
+                "rate" to comment.rate,
+                "restaurantName" to comment.restaurantName,
+                "text" to comment.text
+            )
+            firebaseClient.firestore.collection(Constants.COMMENTS_COLLECTION).add(commentData).await()
+            true
+        } catch (e: Exception){
+            Log.d(TEST_MESSAGE, DATA_REGISTERED_UNSUCCESSFULLY)
+            false
+        }
+
     }
 }

@@ -41,12 +41,14 @@ import com.example.electivaiv.common.composable.Footer
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.mainCommentCard
 import com.example.electivaiv.domain.model.PostComment
+import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 
 val comments = listOf("", "", "", "")
 
 @Composable
 fun HomeScreen(
+    onAddComment: (String) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
@@ -62,6 +64,7 @@ fun HomeScreen(
 
             FloatingActionButton(
                 onClick = {
+                    onAddComment(ScreensRoutes.AddCommentScreen.route)
                 }
             ) {
                 Icon(Icons.Filled.Add, "Floating action button.")
@@ -197,6 +200,8 @@ fun RatingStars(rating: Double, modifier: Modifier) {
 @Composable
 fun PreviewSignUpScreen() {
     ElectivaIVTheme {
-        HomeScreen()
+        HomeScreen(
+            onAddComment = {}
+        )
     }
 }

@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.electivaiv.ui.navigation.ScreensRoutes
+import com.example.electivaiv.ui.screens.addComment.AddCommentScreen
 import com.example.electivaiv.ui.screens.login.LoginScreen
 import com.example.electivaiv.ui.screens.login.LoginViewModel
 import com.example.electivaiv.ui.screens.main.HomeScreen
@@ -59,7 +60,20 @@ fun MainNavigation(
         startDestination = ScreensRoutes.MainScreen.route
     ) {
         composable(ScreensRoutes.MainScreen.route) {
-            HomeScreen()
+            HomeScreen(
+                onAddComment = { route ->
+                    navController.navigate(route)
+                }
+            )
+        }
+
+        composable(ScreensRoutes.AddCommentScreen.route){
+            AddCommentScreen(
+                onSaveComment = {},
+                onCloseUi = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

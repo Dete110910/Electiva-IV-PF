@@ -47,3 +47,7 @@ fun Modifier.mainCommentCard(): Modifier {
         .fillMaxWidth()
         .height(120.dp)
 }
+
+fun Modifier.textCardModifier(): Modifier {
+    return this.padding(start = 5.dp,  end = 5.dp, bottom = 5.dp)
+}

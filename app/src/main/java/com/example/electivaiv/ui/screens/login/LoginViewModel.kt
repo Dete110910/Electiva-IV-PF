@@ -39,8 +39,7 @@ class LoginViewModel @Inject constructor(
     suspend fun login(email: String, password: String): Any? =
         loginUseCase.invoke(email, password)
 
-    fun onLoginInClick(
-        openScreen: (String, String) -> Unit, onAuthenticatedChange: (Boolean) -> Unit
+    fun onLoginInClick(onAuthenticatedChange: (Boolean) -> Unit
     ) {
         if (!email.isValidEmail()) {
             Log.d(TEST_MESSAGE, VALID_EMAIL_MESSAGE)
