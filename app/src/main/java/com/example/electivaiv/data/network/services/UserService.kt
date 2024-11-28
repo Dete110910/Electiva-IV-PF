@@ -1,6 +1,7 @@
 package com.example.electivaiv.data.network.services
 
 import android.util.Log
+import com.example.electivaiv.common.Constants
 import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
 import com.example.electivaiv.common.Constants.Companion.USERS_COLLECTION
 import com.example.electivaiv.common.Constants.Companion.USER_SUCCESSFULLY_REGISTERED_MESSAGE
@@ -40,8 +41,10 @@ class UserService @Inject constructor(
         if (documents.isNotEmpty()) {
             val user = documents[0]
             val path = user.reference.path
+            val name = user.getString(Constants.NAME)!!
+            val profilePhoto = user.getString(Constants.PROFILE_PHOTO)!!
             Log.d(TEST_MESSAGE, "User found: $uid")
-            return UserSP(path, uid)
+            return UserSP(path, uid, name, profilePhoto)
         } else {
             Log.d(TEST_MESSAGE, "No user found with uid: $uid")
             null

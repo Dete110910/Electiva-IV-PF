@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddCommentViewModel @Inject constructor(
-    private val saveCommentUseCase: SaveCommentUseCase
+    private val saveCommentUseCase: SaveCommentUseCase,
 ) : ViewModel() {
 
 

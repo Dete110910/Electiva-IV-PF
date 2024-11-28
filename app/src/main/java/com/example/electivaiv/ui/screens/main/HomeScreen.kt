@@ -115,11 +115,6 @@ fun HomeScreen(
                         homeViewModel.listDataBaseComments()
                     }
 
-                    Lifecycle.State.CREATED -> {
-                        homeViewModel.listDataBaseComments()
-
-                    }
-
                     else -> Unit
                 }
             }

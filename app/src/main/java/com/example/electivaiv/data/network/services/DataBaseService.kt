@@ -89,7 +89,7 @@ class DataBaseService @Inject constructor(
             firebaseClient.firestore.collection(Constants.COMMENTS_COLLECTION).add(commentData).await()
             true
         } catch (e: Exception){
-            Log.d(TEST_MESSAGE, DATA_REGISTERED_UNSUCCESSFULLY)
+            Log.d(TEST_MESSAGE, "$DATA_REGISTERED_UNSUCCESSFULLY: ${e.message} + ${e.cause}")
             false
         }
 

@@ -32,12 +32,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.textCardModifier
+import com.example.electivaiv.data.local.services.UserServiceSP
 import com.example.electivaiv.domain.model.PostComment
 
 @Composable
 fun AddCommentScreen(
     onCloseUi: () -> Unit,
-    addCommentViewModel: AddCommentViewModel = hiltViewModel()
+    addCommentViewModel: AddCommentViewModel = hiltViewModel(),
 ) {
     Scaffold(
         topBar = { Header() }
