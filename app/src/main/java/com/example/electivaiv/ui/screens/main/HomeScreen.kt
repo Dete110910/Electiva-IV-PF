@@ -1,5 +1,6 @@
 package com.example.electivaiv.ui.screens.main
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -36,17 +37,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.electivaiv.R
 import com.example.electivaiv.common.composable.Footer
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.mainCommentCard
 import com.example.electivaiv.domain.model.PostComment
+import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 
 val comments = listOf("", "", "", "")
 
 @Composable
 fun HomeScreen(
+    onAddComment: (String) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
@@ -62,6 +67,7 @@ fun HomeScreen(
 
             FloatingActionButton(
                 onClick = {
+                    onAddComment(ScreensRoutes.AddCommentScreen.route)
                 }
             ) {
                 Icon(Icons.Filled.Add, "Floating action button.")
@@ -102,6 +108,16 @@ fun HomeScreen(
                 }
             }
 
+            HandleHomeScreenLifecycle { state ->
+                Log.d("TEST", "$state")
+                when (state) {
+                    Lifecycle.State.RESUMED -> {
+                        homeViewModel.listDataBaseComments()
+                    }
+
+                    else -> Unit
+                }
+            }
         }
     }
 }
@@ -186,17 +202,28 @@ fun RatingStars(rating: Double, modifier: Modifier) {
             Icon(
                 imageVector = Icons.Outlined.Star,
                 contentDescription = "Empty Star",
-                tint = Color.Yellow
+                tint = Color.Gray
             )
         }
     }
 }
 
+@Composable
+fun HandleHomeScreenLifecycle(
+    onLifecycleChanged: (Lifecycle.State) -> Unit
+) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val currentLifecycleStateFlow by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+    onLifecycleChanged(currentLifecycleStateFlow)
+
+}
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewSignUpScreen() {
     ElectivaIVTheme {
-        HomeScreen()
+        HomeScreen(
+            onAddComment = {}
+        )
     }
 }

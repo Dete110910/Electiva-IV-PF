@@ -1,8 +1,8 @@
 package com.example.electivaiv.domain.model
 
 data class PostComment(
-    val authorUid: String,
-    val authorName: String = "",
+    var authorUid: String,
+    var authorName: String = "",
     val restaurantName: String,
     val rate: Number,
     val text: String,

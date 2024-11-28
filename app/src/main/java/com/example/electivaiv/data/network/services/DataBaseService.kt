@@ -1,6 +1,9 @@
 package com.example.electivaiv.data.network.services
 
+import android.net.Uri
 import android.util.Log
+import com.example.electivaiv.common.Constants.Companion.DATA_REGISTERED_UNSUCCESSFULLY
+import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
 import com.example.electivaiv.data.network.clients.FirebaseClient
 import com.example.electivaiv.domain.model.PostComment
 import com.google.firebase.firestore.DocumentSnapshot
@@ -70,5 +73,51 @@ class DataBaseService @Inject constructor(
             text,
             images
         )
+    }
+
+    suspend fun saveComment(comment: PostComment): Boolean {
+        return try {
+            val commentData = hashMapOf(
+                "authorName" to comment.authorName,
+                "authorUid" to comment.authorUid,
+                "images" to comment.images,
+                "rate" to comment.rate,
+                "restaurantName" to comment.restaurantName,
+                "text" to comment.text
+            )
+            firebaseClient.firestore.collection(Constants.COMMENTS_COLLECTION).add(commentData)
+                .await()
+            true
+        } catch (e: Exception) {
+            Log.d(TEST_MESSAGE, "$DATA_REGISTERED_UNSUCCESSFULLY: ${e.message} + ${e.cause}")
+            false
+        }
+    }
+
+    suspend fun saveImages(uris: List<Uri>): MutableList<String> {
+        val storage = firebaseClient.store.reference
+        val urlList = mutableListOf<String>()
+        uris.forEach { uri ->
+            val reference = storage.child("${System.currentTimeMillis()}.jpg")
+            val uploadTask = reference.putFile(uri)
+            uploadTask.continueWithTask{ task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                reference.downloadUrl
+            }.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+                    Log.d("TEST", "Imagen: $downloadUri")
+                    urlList.add(downloadUri.toString())
+                    Log.d(TEST_MESSAGE, "Register Successful image")
+                } else {
+                    Log.d(TEST_MESSAGE, "Register NOT Successful")
+                }
+            }.await()
+        }
+        return urlList
     }
 }

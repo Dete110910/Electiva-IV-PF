@@ -27,6 +27,7 @@ import com.example.electivaiv.R.string as AppText
 fun LoginScreen(
     openScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier,
+    onAuthenticatedChange: (Boolean) -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
@@ -48,7 +49,7 @@ fun LoginScreen(
         EmailField(uiState.email, viewModel::onEmailChange, fieldModifier)
         PasswordField(AppText.password, uiState.password, viewModel::onPasswordChange, fieldModifier)
         BasicButton(AppText.login, Modifier.basicButton()) {
-            viewModel.onLoginInClick(openScreen)
+            viewModel.onLoginInClick(onAuthenticatedChange)
         }
         BasicButton(AppText.register, Modifier.basicButton()) {
             openScreen(ScreensRoutes.SignUpScreen.route, ScreensRoutes.LoginScreen.route)
@@ -63,7 +64,8 @@ fun PreviewSignUpScreen() {
     val s = "a"
     ElectivaIVTheme {
         LoginScreen(
-            openScreen = {route, popUp -> }
+            openScreen = {route, popUp -> },
+            onAuthenticatedChange = {true}
         )
     }
 }

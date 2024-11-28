@@ -13,6 +13,7 @@ class Constants {
         const val COMMENTS_COLLECTION = "comments"
         const val UID = "uid"
         const val NAME = "name"
+        const val PROFILE_PHOTO = "profilePhoto"
 
         //Messages
         const val TEST_MESSAGE = "TEST--"
@@ -28,6 +29,8 @@ class Constants {
         const val ENTER_CONFIRM_LOGIN_IN_MESSAGE = "Inicio de sesion correcto."
         const val ENTER_CONFIRM_LOGIN_IN_MESSAGE_ERROR = "Inicio de sesion incorrecto."
         const val USER_UNSUCCESSFULLY_LOGIN_MESSAGE = "Error al iniciar sesion."
+        const val DATA_REGISTERED_SUCCESSFULLY = "Datos guardados correctamente."
+        const val DATA_REGISTERED_UNSUCCESSFULLY = "Hubo un error al guardar los datos."
 
         //Comments
         const val AUTHOR_UID = "authorUid"
