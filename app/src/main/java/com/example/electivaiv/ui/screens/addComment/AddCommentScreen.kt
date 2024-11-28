@@ -1,5 +1,9 @@
 package com.example.electivaiv.ui.screens.addComment
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,16 +15,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,7 +41,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.textCardModifier
-import com.example.electivaiv.data.local.services.UserServiceSP
 import com.example.electivaiv.domain.model.PostComment
 
 @Composable
@@ -40,8 +48,20 @@ fun AddCommentScreen(
     onCloseUi: () -> Unit,
     addCommentViewModel: AddCommentViewModel = hiltViewModel(),
 ) {
+    var launchPicker by remember { mutableStateOf(false) }
+
     Scaffold(
-        topBar = { Header() }
+        topBar = { Header() },
+        floatingActionButton = {
+
+            FloatingActionButton(
+                onClick = {
+                    launchPicker = true
+                }
+            ) {
+                Icon(Icons.Filled.Add, "Floating action button.")
+            }
+        }
     ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier
@@ -50,9 +70,30 @@ fun AddCommentScreen(
         ) {
             var restaurantName by remember { mutableStateOf("") }
             var description by remember { mutableStateOf("") }
-            var rating: Int by remember { mutableStateOf(0) }
+            var rating by remember { mutableIntStateOf(0) }
+            val images by addCommentViewModel.images
 
+            val pickMultipleVisualMedia = rememberLauncherForActivityResult(
+                ActivityResultContracts.PickMultipleVisualMedia(100)
+            ) { uris ->
+                if (uris.isNotEmpty()) {
+                    addCommentViewModel.saveImages(uris = uris)
+                    Log.d("PhotoPicker", "Number of items selected: ${uris.size}")
+                } else {
+                    Log.d("PhotoPicker", "No media selected")
+                }
+            }
+
+            LaunchedEffect(launchPicker) {
+                if (launchPicker) {
+                    launchPicker = false // Reinicia el estado
+                    pickMultipleVisualMedia.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
+            }
             val (restaurantNameRef, descriptionRef, ratingButtonRef, saveButtonRef, cancelButtonRef) = createRefs()
+
             AddTextTextField(
                 cardModifier = Modifier
                     .textCardModifier()
@@ -99,6 +140,7 @@ fun AddCommentScreen(
                     rating = newRating
                 }
             )
+
             Button(
                 onClick = {
                     if (restaurantName.isNotBlank() && description.isNotBlank()) {
@@ -108,7 +150,7 @@ fun AddCommentScreen(
                             restaurantName,
                             rating.toDouble(),
                             description,
-                            emptyList()
+                            images
                         )
                         addCommentViewModel.saveComment(newComment)
                         onCloseUi()
@@ -121,7 +163,7 @@ fun AddCommentScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     }
-                    .padding(start = 40.dp, end = 40.dp, top = 2.dp)
+                    .padding(start = 40.dp, end = 40.dp, top = 2.dp),
             ) {
                 Text(
                     text = "Guardar"
