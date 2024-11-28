@@ -1,9 +1,11 @@
 package com.example.electivaiv.ui.screens.addComment
 
+import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -12,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -29,16 +33,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.rememberAsyncImagePainter
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.textCardModifier
 import com.example.electivaiv.domain.model.PostComment
@@ -72,11 +77,13 @@ fun AddCommentScreen(
             var description by remember { mutableStateOf("") }
             var rating by remember { mutableIntStateOf(0) }
             val images by addCommentViewModel.images
+            var urisList: List<Uri> by remember { mutableStateOf(mutableListOf()) }
 
             val pickMultipleVisualMedia = rememberLauncherForActivityResult(
                 ActivityResultContracts.PickMultipleVisualMedia(100)
             ) { uris ->
                 if (uris.isNotEmpty()) {
+                    urisList = uris
                     addCommentViewModel.saveImages(uris = uris)
                     Log.d("PhotoPicker", "Number of items selected: ${uris.size}")
                 } else {
@@ -86,13 +93,13 @@ fun AddCommentScreen(
 
             LaunchedEffect(launchPicker) {
                 if (launchPicker) {
-                    launchPicker = false // Reinicia el estado
+                    launchPicker = false
                     pickMultipleVisualMedia.launch(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
                 }
             }
-            val (restaurantNameRef, descriptionRef, ratingButtonRef, saveButtonRef, cancelButtonRef) = createRefs()
+            val (restaurantNameRef, descriptionRef, ratingButtonRef, imagesRef, saveButtonRef, cancelButtonRef) = createRefs()
 
             AddTextTextField(
                 cardModifier = Modifier
@@ -133,13 +140,27 @@ fun AddCommentScreen(
                         top.linkTo(descriptionRef.bottom)
                         start.linkTo(restaurantNameRef.start)
                         end.linkTo(restaurantNameRef.end)
-                        bottom.linkTo(saveButtonRef.top)
+                        bottom.linkTo(imagesRef.top)
                     },
                 currentRating = rating,
                 onRatingSelected = { newRating ->
                     rating = newRating
                 }
             )
+
+            LazyRow (
+                modifier = Modifier.constrainAs(imagesRef){
+                    top.linkTo(ratingButtonRef.bottom)
+                    start.linkTo(ratingButtonRef.start)
+                    end.linkTo(ratingButtonRef.end)
+                    bottom.linkTo(saveButtonRef.top)
+
+                }
+            ) {
+                items(urisList){ uri ->
+                    LoadImages(uri)
+                }
+            }
 
             Button(
                 onClick = {
@@ -159,7 +180,7 @@ fun AddCommentScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(saveButtonRef) {
-                        top.linkTo(ratingButtonRef.bottom)
+                        top.linkTo(imagesRef.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     }
@@ -238,6 +259,15 @@ fun StarRating(
             )
         }
     }
+}
+
+@Composable
+fun LoadImages(uri: Uri, modifier: Modifier = Modifier) {
+    Image(
+        painter = rememberAsyncImagePainter(model = uri),
+        contentDescription = "Selected Image",
+        modifier = modifier.size(120.dp).padding(8.dp)
+    )
 }
 
 @Preview(showBackground = true)
