@@ -23,7 +23,7 @@ class HomeViewModel @Inject constructor(
         listDataBaseComments()
     }
 
-    private fun listDataBaseComments() {
+    fun listDataBaseComments() {
         viewModelScope.launch {
             val comments = getCommentsUseCase.invoke()
             _uiState.value = _uiState.value.copy(commentsList = comments, isLoading = false)

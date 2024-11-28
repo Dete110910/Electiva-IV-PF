@@ -1,5 +1,6 @@
 package com.example.electivaiv.ui.screens.main
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.electivaiv.R
 import com.example.electivaiv.common.composable.Footer
 import com.example.electivaiv.common.composable.Header
@@ -105,6 +108,21 @@ fun HomeScreen(
                 }
             }
 
+            HandleHomeScreenLifecycle { state ->
+                Log.d("TEST", "$state")
+                when (state) {
+                    Lifecycle.State.RESUMED -> {
+                        homeViewModel.listDataBaseComments()
+                    }
+
+                    Lifecycle.State.CREATED -> {
+                        homeViewModel.listDataBaseComments()
+
+                    }
+
+                    else -> Unit
+                }
+            }
         }
     }
 }
@@ -195,6 +213,15 @@ fun RatingStars(rating: Double, modifier: Modifier) {
     }
 }
 
+@Composable
+fun HandleHomeScreenLifecycle(
+    onLifecycleChanged: (Lifecycle.State) -> Unit
+) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val currentLifecycleStateFlow by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+    onLifecycleChanged(currentLifecycleStateFlow)
+
+}
 
 @Preview(showBackground = true)
 @Composable

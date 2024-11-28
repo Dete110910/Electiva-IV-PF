@@ -1,6 +1,5 @@
 package com.example.electivaiv.ui.screens.addComment
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -31,14 +30,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.electivaiv.common.Constants
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.textCardModifier
 import com.example.electivaiv.domain.model.PostComment
 
 @Composable
 fun AddCommentScreen(
-    onSaveComment: (PostComment) -> Unit,
     onCloseUi: () -> Unit,
     addCommentViewModel: AddCommentViewModel = hiltViewModel()
 ) {
@@ -50,10 +47,9 @@ fun AddCommentScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val uiState by addCommentViewModel.uiState
             var restaurantName by remember { mutableStateOf("") }
             var description by remember { mutableStateOf("") }
-            var rating : Int by remember { mutableStateOf(0) }
+            var rating: Int by remember { mutableStateOf(0) }
 
             val (restaurantNameRef, descriptionRef, ratingButtonRef, saveButtonRef, cancelButtonRef) = createRefs()
             AddTextTextField(
@@ -105,7 +101,6 @@ fun AddCommentScreen(
             Button(
                 onClick = {
                     if (restaurantName.isNotBlank() && description.isNotBlank()) {
-                        Log.d("TEST", "rate: $rating")
                         val newComment = PostComment(
                             "",
                             "",
@@ -148,8 +143,8 @@ fun AddCommentScreen(
                     text = "Cancelar"
                 )
             }
-
         }
+
     }
 }
 
@@ -206,7 +201,6 @@ fun StarRating(
 @Composable
 fun PreviewAddCommentScreen() {
     AddCommentScreen(
-        onSaveComment = {},
         onCloseUi = { }
     )
 }

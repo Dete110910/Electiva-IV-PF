@@ -69,7 +69,6 @@ fun MainNavigation(
 
         composable(ScreensRoutes.AddCommentScreen.route){
             AddCommentScreen(
-                onSaveComment = {},
                 onCloseUi = {
                     navController.popBackStack()
                 }

@@ -1,6 +1,5 @@
 package com.example.electivaiv.ui.screens.addComment
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.electivaiv.domain.model.PostComment
@@ -14,12 +13,9 @@ class AddCommentViewModel @Inject constructor(
     private val saveCommentUseCase: SaveCommentUseCase
 ) : ViewModel() {
 
-    var uiState = mutableStateOf(false)
-        private set
 
-    fun saveComment(comment: PostComment){
-        viewModelScope.launch {
-            uiState.value = saveCommentUseCase.invoke(comment)
-        }
+    fun saveComment(comment: PostComment) {
+        viewModelScope.launch { saveCommentUseCase.invoke(comment) }
     }
+
 }
