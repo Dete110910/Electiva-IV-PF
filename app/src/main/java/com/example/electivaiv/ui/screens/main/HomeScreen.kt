@@ -144,7 +144,6 @@ fun MainCommentCard(comment: PostComment, onShowUserCommentProfile: (String, Pos
                         start.linkTo(parent.start, 10.dp)
                     }
                     .clickable {
-                        Log.d("TEST", "Click sobre imagen")
                         onShowUserCommentProfile(ScreensRoutes.AuthorCommentProfile.route, comment)
                     }
                     .size(50.dp)
@@ -158,7 +157,6 @@ fun MainCommentCard(comment: PostComment, onShowUserCommentProfile: (String, Pos
                         start.linkTo(profileImage.end, 10.dp)
                     }
                     .clickable {
-                        Log.d("TEST", "Click sobre texto")
                         onShowUserCommentProfile(ScreensRoutes.AuthorCommentProfile.route, comment)
                     },
                 text = "${comment.authorName} dijo sobre ${comment.restaurantName}",
@@ -166,7 +164,7 @@ fun MainCommentCard(comment: PostComment, onShowUserCommentProfile: (String, Pos
                 fontSize = 17.sp,
             )
 
-            RatingStars(comment.rate.toDouble(), Modifier.constrainAs(commentRate) {
+            RatingStars(comment.rate, Modifier.constrainAs(commentRate) {
                 top.linkTo(commentTitle.bottom, 5.dp)
                 start.linkTo(commentTitle.start)
 

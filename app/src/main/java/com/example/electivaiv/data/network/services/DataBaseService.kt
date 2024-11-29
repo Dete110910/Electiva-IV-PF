@@ -103,7 +103,7 @@ class DataBaseService @Inject constructor(
         uris.forEach { uri ->
             val reference = storage.child("${System.currentTimeMillis()}.jpg")
             val uploadTask = reference.putFile(uri)
-            uploadTask.continueWithTask{ task ->
+            uploadTask.continueWithTask { task ->
                 if (!task.isSuccessful) {
                     task.exception?.let {
                         throw it
@@ -122,5 +122,18 @@ class DataBaseService @Inject constructor(
             }.await()
         }
         return urlList
+    }
+
+    suspend fun getCommentsByAuthor(uid: String): List<PostComment> {
+        var commentsList = mutableListOf<PostComment>()
+        val response =
+            firebaseClient.firestore.collection(Constants.COMMENTS_COLLECTION)
+                .whereEqualTo(Constants.AUTHOR_UID, uid).get().await()
+        if (!response.isEmpty) {
+            commentsList = createComments(response.documents)
+            commentsList = findCommentatorName(commentsList)
+        }
+        Log.d("TEST", commentsList.toString())
+        return commentsList
     }
 }
