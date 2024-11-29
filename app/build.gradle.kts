@@ -5,6 +5,7 @@ plugins {
     id("com.google.gms.google-services")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id ("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -67,6 +68,9 @@ dependencies {
 
     //Coil
     implementation(libs.coil.compose)
+
+    //Serializable
+    implementation (libs.kotlinx.serialization.json)
 
 
     implementation(libs.androidx.core.ktx)

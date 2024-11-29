@@ -168,6 +168,7 @@ fun AddCommentScreen(
                         val newComment = PostComment(
                             "",
                             "",
+                            "",
                             restaurantName,
                             rating.toDouble(),
                             description,

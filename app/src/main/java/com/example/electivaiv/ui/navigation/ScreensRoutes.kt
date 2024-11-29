@@ -5,4 +5,5 @@ sealed class ScreensRoutes(val route: String) {
     object LoginScreen : ScreensRoutes("LoginScreen")
     object MainScreen : ScreensRoutes("MainScreen")
     object AddCommentScreen : ScreensRoutes("AddCommentScreen")
+    object AuthorCommentProfile : ScreensRoutes("AuthorCommentProfileScreen")
 }

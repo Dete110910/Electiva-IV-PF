@@ -58,6 +58,8 @@ class DataBaseService @Inject constructor(
             ?: Constants.EMPTY_STRING
         val authorName = document.getString(Constants.AUTHOR_NAME)
             ?: Constants.EMPTY_STRING
+        val authorProfilePhoto = document.getString(Constants.AUTHOR_PROFILE_PHOTO)
+            ?: Constants.EMPTY_STRING
         val images = document.get(Constants.ARRAY_IMAGES) as List<String>
         val rate = document.getDouble(Constants.RATE)
             ?: Constants.ZERO
@@ -68,8 +70,9 @@ class DataBaseService @Inject constructor(
         return PostComment(
             authorUid,
             authorName,
+            authorProfilePhoto,
             restaurantName,
-            rate,
+            rate.toDouble(),
             text,
             images
         )
