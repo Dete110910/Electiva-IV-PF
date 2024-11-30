@@ -113,6 +113,7 @@ fun HomeScreen(
                 Log.d("TEST", "$state")
                 when (state) {
                     Lifecycle.State.RESUMED -> {
+                        homeViewModel.validateAndLoadLikes()
                         homeViewModel.listDataBaseComments()
                     }
 
