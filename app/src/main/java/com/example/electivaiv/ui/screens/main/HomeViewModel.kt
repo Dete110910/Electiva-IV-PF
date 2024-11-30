@@ -31,8 +31,11 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    val isLikesLoaded = MutableLiveData<Boolean>()
+
     init {
         listDataBaseComments()
+        validateAndLoadLikes()
     }
 
     fun listDataBaseComments() {
@@ -41,8 +44,6 @@ class HomeViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(commentsList = comments, isLoading = false)
         }
     }
-
-    val isLikesLoaded = MutableLiveData<Boolean>()
 
     fun validateAndLoadLikes() {
         viewModelScope.launch {
@@ -67,6 +68,47 @@ class HomeViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e(TEST_MESSAGE, "Error al recuperar likes: ${e.message}")
+                isLikesLoaded.postValue(false)
+            }
+        }
+    }
+
+    fun syncLikes() {
+        viewModelScope.launch {
+            try {
+                val userUid = loginUseCase.getSessionActive()
+                if (userUid != null) {
+                    val localLikeUser = likeUserServiceSP.getLikeUser()
+                    val firebaseLikes = getLikesByUserUseCase.invoke(userUid)
+
+                    val localLikesSet = localLikeUser.uidFavComments.toSet()
+                    val firebaseLikesSet = firebaseLikes.toSet()
+
+                    when {
+                        localLikesSet.size > firebaseLikesSet.size -> {
+                            // Actualizar Firebase con los datos locales
+                            val updatedLikes = localLikesSet.union(firebaseLikesSet).toList()
+                            likeUserServiceSP.saveLikeUser(likeUser(userUid, updatedLikes))
+                            Log.d(TEST_MESSAGE, "Firebase actualizado con datos locales")
+                        }
+                        firebaseLikesSet.size > localLikesSet.size -> {
+                            // Actualizar datos locales con los datos de Firebase
+                            likeUserServiceSP.saveLikeUser(likeUser(userUid, firebaseLikes))
+                            Log.d(TEST_MESSAGE, "Datos locales actualizados con datos de Firebase")
+                        }
+                        else -> {
+                            Log.d(TEST_MESSAGE, "Los datos locales y de Firebase están sincronizados")
+                        }
+                    }
+
+                    _uiState.value = _uiState.value.copy(likes = firebaseLikes)
+                    isLikesLoaded.postValue(true)
+                } else {
+                    Log.d(TEST_MESSAGE, "userUid es null")
+                    isLikesLoaded.postValue(false)
+                }
+            } catch (e: Exception) {
+                Log.e(TEST_MESSAGE, "Error al sincronizar likes: ${e.message}")
                 isLikesLoaded.postValue(false)
             }
         }
