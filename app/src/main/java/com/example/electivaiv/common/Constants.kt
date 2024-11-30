@@ -31,10 +31,12 @@ class Constants {
         const val USER_UNSUCCESSFULLY_LOGIN_MESSAGE = "Error al iniciar sesion."
         const val DATA_REGISTERED_SUCCESSFULLY = "Datos guardados correctamente."
         const val DATA_REGISTERED_UNSUCCESSFULLY = "Hubo un error al guardar los datos."
+        const val AVERAGE_RATING = "Promedio de valoraciones"
 
         //Comments
         const val AUTHOR_UID = "authorUid"
         const val AUTHOR_NAME = "authorName"
+        const val AUTHOR_PROFILE_PHOTO = "authorProfilePhoto"
         const val UNKNOWN_AUTHOR = "Desconocido"
         const val ARRAY_IMAGES= "images"
         const val RATE = "rate"

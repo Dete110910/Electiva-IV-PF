@@ -3,6 +3,7 @@ package com.example.electivaiv.ui.screens.main
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -47,11 +49,10 @@ import com.example.electivaiv.domain.model.PostComment
 import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 
-val comments = listOf("", "", "", "")
-
 @Composable
 fun HomeScreen(
     onAddComment: (String) -> Unit,
+    onShowUserCommentProfile: (String, PostComment) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
@@ -103,7 +104,7 @@ fun HomeScreen(
  */
             LazyColumn {
                 items(uiState.commentsList) { comment ->
-                    MainCommentCard(comment)
+                    MainCommentCard(comment, onShowUserCommentProfile)
 
                 }
             }
@@ -123,7 +124,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun MainCommentCard(comment: PostComment) {
+fun MainCommentCard(comment: PostComment, onShowUserCommentProfile: (String, PostComment) -> Unit) {
     Card(
         modifier = Modifier.mainCommentCard(),
         shape = RoundedCornerShape(8.dp),
@@ -142,21 +143,28 @@ fun MainCommentCard(comment: PostComment) {
                         top.linkTo(parent.top, 10.dp)
                         start.linkTo(parent.start, 10.dp)
                     }
+                    .clickable {
+                        onShowUserCommentProfile(ScreensRoutes.AuthorCommentProfile.route, comment)
+                    }
                     .size(50.dp)
                     .clip(CircleShape)
             )
 
             Text(
-                modifier = Modifier.constrainAs(commentTitle) {
-                    top.linkTo(profileImage.top, 5.dp)
-                    start.linkTo(profileImage.end, 10.dp)
-                },
+                modifier = Modifier
+                    .constrainAs(commentTitle) {
+                        top.linkTo(profileImage.top, 5.dp)
+                        start.linkTo(profileImage.end, 10.dp)
+                    }
+                    .clickable {
+                        onShowUserCommentProfile(ScreensRoutes.AuthorCommentProfile.route, comment)
+                    },
                 text = "${comment.authorName} dijo sobre ${comment.restaurantName}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 17.sp,
             )
 
-            RatingStars(comment.rate.toDouble(), Modifier.constrainAs(commentRate) {
+            RatingStars(comment.rate, Modifier.constrainAs(commentRate) {
                 top.linkTo(commentTitle.bottom, 5.dp)
                 start.linkTo(commentTitle.start)
 
@@ -178,7 +186,7 @@ fun MainCommentCard(comment: PostComment) {
 }
 
 @Composable
-fun RatingStars(rating: Double, modifier: Modifier) {
+fun RatingStars(rating: Double, modifier: Modifier, size: Dp = 25.dp) {
     val fullStars = rating.toInt()
     val hasHalfStar = rating % 1 >= 0.5
     val totalStars = 5
@@ -188,21 +196,24 @@ fun RatingStars(rating: Double, modifier: Modifier) {
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = "Full Star",
-                tint = Color.Yellow
+                tint = Color.Yellow,
+                modifier = Modifier.size(size)
             )
         }
         if (hasHalfStar) {
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = "Half Star",
-                tint = Color.Gray
+                tint = Color.Gray,
+                modifier = Modifier.size(size)
             )
         }
         repeat(totalStars - fullStars - if (hasHalfStar) 1 else 0) {
             Icon(
                 imageVector = Icons.Outlined.Star,
                 contentDescription = "Empty Star",
-                tint = Color.Gray
+                tint = Color.Gray,
+                modifier = Modifier.size(size)
             )
         }
     }
@@ -223,7 +234,8 @@ fun HandleHomeScreenLifecycle(
 fun PreviewSignUpScreen() {
     ElectivaIVTheme {
         HomeScreen(
-            onAddComment = {}
+            onAddComment = {},
+            onShowUserCommentProfile = { a, b -> }
         )
     }
 }
