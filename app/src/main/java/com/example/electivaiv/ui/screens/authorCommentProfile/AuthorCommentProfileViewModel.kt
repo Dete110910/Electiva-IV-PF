@@ -34,4 +34,6 @@ class AuthorCommentProfileViewModel @Inject constructor(
         }
         return (sum / comments.size).toDouble()
     }
+
+
 }
