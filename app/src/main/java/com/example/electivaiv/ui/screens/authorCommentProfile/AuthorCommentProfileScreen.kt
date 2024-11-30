@@ -2,7 +2,7 @@ package com.example.electivaiv.ui.screens.authorCommentProfile
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil3.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.electivaiv.common.Constants.Companion.AVERAGE_RATING
 import com.example.electivaiv.common.composable.Footer
 import com.example.electivaiv.common.composable.Header
@@ -57,10 +57,11 @@ fun AuthorCommentProfileScreen(
 ) {
     val uiState by authorCommentProfileViewModel.uiState.collectAsState()
     var rate by remember { mutableStateOf(0.0) }
+    var isFav by remember { mutableStateOf(false) }
     authorCommentProfileViewModel.getCommentsByUser(comment.authorUid)
     LaunchedEffect(uiState.otherComments) {
-        if(uiState.otherComments.isNotEmpty()){
-        rate = authorCommentProfileViewModel.getAverageRate(uiState.otherComments)
+        if (uiState.otherComments.isNotEmpty()) {
+            rate = authorCommentProfileViewModel.getAverageRate(uiState.otherComments)
             Log.d("TEST", "RATE: $rate")
         }
     }
@@ -78,11 +79,17 @@ fun AuthorCommentProfileScreen(
                 .padding(innerPadding)
         ) {
             val (userInfoCard, otherComments) = createRefs()
-            UserInfoCard(comment, rate,Modifier.constrainAs(userInfoCard) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                bottom.linkTo(otherComments.top)
-            })
+            UserInfoCard(
+                comment = comment,
+                rate = rate,
+                isFav = isFav,
+                onChangeFav = {
+                    isFav = !isFav
+                }, modifier = Modifier.constrainAs(userInfoCard) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    bottom.linkTo(otherComments.top)
+                })
 
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth()
@@ -103,7 +110,13 @@ fun AuthorCommentProfileScreen(
 }
 
 @Composable
-fun UserInfoCard(comment: PostComment, rate: Double, modifier: Modifier = Modifier) {
+fun UserInfoCard(
+    comment: PostComment,
+    rate: Double,
+    isFav: Boolean,
+    onChangeFav: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier.authorCommentProfileCard(),
         shape = RoundedCornerShape(5.dp),
@@ -115,20 +128,18 @@ fun UserInfoCard(comment: PostComment, rate: Double, modifier: Modifier = Modifi
                 .height(150.dp)
         ) {
             val (profilePhoto, userName, favButton, averageRatingText, averageRatingStars) = createRefs()
-            val isFav = true
-            AsyncImage(
-                model = comment.authorProfilePhoto,
-                contentDescription = "User Profile Photo",
+            Image(
+                painter = rememberAsyncImagePainter(
+                    model = comment.authorProfilePhoto
+                ),
+                contentDescription = "",
                 modifier = Modifier
                     .constrainAs(profilePhoto) {
                         top.linkTo(parent.top, 20.dp)
                         start.linkTo(parent.start, 20.dp)
                     }
-                    .background(Color.Blue)
                     .size(60.dp)
-                    .clip(
-                        shape = CircleShape
-                    )
+                    .clip(shape = CircleShape)
             )
 
             Text(
@@ -145,7 +156,7 @@ fun UserInfoCard(comment: PostComment, rate: Double, modifier: Modifier = Modifi
 
             Button(
                 onClick = {
-
+                    onChangeFav(!isFav)
                 },
                 modifier = Modifier.constrainAs(favButton) {
                     top.linkTo(userName.top)

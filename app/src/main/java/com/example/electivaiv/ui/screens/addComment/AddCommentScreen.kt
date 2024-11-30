@@ -43,7 +43,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil3.compose.rememberAsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.textCardModifier
 import com.example.electivaiv.domain.model.PostComment

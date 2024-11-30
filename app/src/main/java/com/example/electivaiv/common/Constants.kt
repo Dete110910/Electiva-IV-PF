@@ -36,7 +36,7 @@ class Constants {
         //Comments
         const val AUTHOR_UID = "authorUid"
         const val AUTHOR_NAME = "authorName"
-        const val AUTHOR_PROFILE_PHOTO = "profilePhoto"
+        const val AUTHOR_PROFILE_PHOTO = "authorProfilePhoto"
         const val UNKNOWN_AUTHOR = "Desconocido"
         const val ARRAY_IMAGES= "images"
         const val RATE = "rate"

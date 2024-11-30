@@ -67,7 +67,8 @@ dependencies {
     kapt(libs.androidx.room.compiler)
 
     //Coil
-    implementation(libs.coil.compose)
+    //implementation(libs.coil.compose)
+    implementation(libs.coil.kt.coil.compose)
 
     //Serializable
     implementation (libs.kotlinx.serialization.json)
