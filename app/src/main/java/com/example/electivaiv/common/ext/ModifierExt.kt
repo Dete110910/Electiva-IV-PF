@@ -58,7 +58,7 @@ fun Modifier.authorCommentProfileCard(): Modifier {
 fun Modifier.minimizedCommentsCard(): Modifier {
     return this
         .fillMaxWidth()
-        .height(100.dp)
+        .wrapContentHeight()
 }
 
 fun Modifier.textCardModifier(): Modifier {

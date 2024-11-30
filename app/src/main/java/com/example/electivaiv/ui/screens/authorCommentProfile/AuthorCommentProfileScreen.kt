@@ -3,11 +3,13 @@ package com.example.electivaiv.ui.screens.authorCommentProfile
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -199,7 +201,7 @@ fun MinimizedCommentsCard(comment: PostComment) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .wrapContentHeight()
         ) {
             val (restName, restRate, description) = createRefs()
             val fontSize = 18.sp
@@ -211,7 +213,6 @@ fun MinimizedCommentsCard(comment: PostComment) {
                 modifier = Modifier.constrainAs(restName) {
                     top.linkTo(parent.top, 15.dp)
                     start.linkTo(parent.start, 15.dp)
-                    bottom.linkTo(description.top, 20.dp)
                 }
             )
             Text(
@@ -221,16 +222,18 @@ fun MinimizedCommentsCard(comment: PostComment) {
                 modifier = Modifier.constrainAs(restRate) {
                     top.linkTo(parent.top, 15.dp)
                     start.linkTo(restName.end, 30.dp)
-                    bottom.linkTo(description.top, 20.dp)
                 }
             )
             Text(
                 text = comment.text,
                 fontSize = fontSize,
                 modifier = Modifier.constrainAs(description) {
-                    top.linkTo(restName.bottom, 20.dp)
-                    start.linkTo(restName.start)
-                },
+                    top.linkTo(restName.bottom, 15.dp)
+                    start.linkTo(restName.start, 15.dp)
+                    end.linkTo(parent.end, 5.dp)
+                    bottom.linkTo(parent.bottom, 15.dp)
+                }
+                    .fillMaxWidth(),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
