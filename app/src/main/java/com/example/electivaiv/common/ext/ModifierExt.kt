@@ -3,8 +3,9 @@ package com.example.electivaiv.common.ext
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -61,5 +62,19 @@ fun Modifier.minimizedCommentsCard(): Modifier {
 }
 
 fun Modifier.textCardModifier(): Modifier {
-    return this.padding(start = 5.dp,  end = 5.dp, bottom = 5.dp)
+    return this.padding(start = 5.dp, end = 5.dp, bottom = 5.dp)
+}
+
+fun Modifier.commentDetailWithImagesCard(): Modifier {
+    return this
+        .padding(6.dp, 2.dp, 6.dp, 2.dp)
+        .fillMaxWidth()
+        .wrapContentHeight()
+}
+
+fun Modifier.commentDetailWithoutImagesCard(): Modifier {
+    return this
+        .padding(6.dp, 2.dp, 6.dp, 2.dp)
+        .fillMaxWidth()
+        .wrapContentHeight()
 }

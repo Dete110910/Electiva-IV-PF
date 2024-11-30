@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -264,11 +265,16 @@ fun StarRating(
 }
 
 @Composable
-fun LoadImages(uri: Uri, modifier: Modifier = Modifier) {
+fun LoadImages(
+    uri: Uri,
+    modifier: Modifier = Modifier,
+    size: Dp = 120.dp,
+    padding: Dp = 8.dp
+) {
     Image(
         painter = rememberAsyncImagePainter(model = uri),
         contentDescription = "Selected Image",
-        modifier = modifier.size(120.dp).padding(8.dp)
+        modifier = modifier.size(size).padding(padding)
     )
 }
 
