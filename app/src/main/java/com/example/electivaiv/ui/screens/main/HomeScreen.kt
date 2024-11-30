@@ -41,6 +41,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import coil.compose.rememberAsyncImagePainter
 import com.example.electivaiv.R
 import com.example.electivaiv.common.composable.Footer
 import com.example.electivaiv.common.composable.Header
@@ -53,6 +54,7 @@ import com.example.electivaiv.ui.theme.ElectivaIVTheme
 fun HomeScreen(
     onAddComment: (String) -> Unit,
     onShowUserCommentProfile: (String, PostComment) -> Unit,
+    onShowCommentDetail: (String, PostComment) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
@@ -104,7 +106,11 @@ fun HomeScreen(
  */
             LazyColumn {
                 items(uiState.commentsList) { comment ->
-                    MainCommentCard(comment, onShowUserCommentProfile)
+                    MainCommentCard(
+                        comment = comment,
+                        onShowUserCommentProfile = onShowUserCommentProfile,
+                        onShowCommentDetail = onShowCommentDetail
+                    )
 
                 }
             }
@@ -124,9 +130,17 @@ fun HomeScreen(
 }
 
 @Composable
-fun MainCommentCard(comment: PostComment, onShowUserCommentProfile: (String, PostComment) -> Unit) {
+fun MainCommentCard(
+    comment: PostComment,
+    onShowUserCommentProfile: (String, PostComment) -> Unit,
+    onShowCommentDetail: (String, PostComment) -> Unit,
+) {
     Card(
-        modifier = Modifier.mainCommentCard(),
+        modifier = Modifier
+            .mainCommentCard()
+            .clickable {
+                onShowCommentDetail(ScreensRoutes.CommentDetail.route, comment)
+            },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
         border = BorderStroke(0.5.dp, color = Color.Black)
@@ -136,7 +150,9 @@ fun MainCommentCard(comment: PostComment, onShowUserCommentProfile: (String, Pos
         ) {
             val (profileImage, commentTitle, commentRate, commentDescription) = createRefs()
             Image(
-                painter = painterResource(R.drawable.img_default_profile_photo),
+                painter = rememberAsyncImagePainter(
+                    model = comment.authorProfilePhoto
+                ),
                 contentDescription = null,
                 modifier = Modifier
                     .constrainAs(profileImage) {
@@ -235,7 +251,8 @@ fun PreviewSignUpScreen() {
     ElectivaIVTheme {
         HomeScreen(
             onAddComment = {},
-            onShowUserCommentProfile = { a, b -> }
+            onShowUserCommentProfile = { a, b -> },
+            onShowCommentDetail = { a, b -> }
         )
     }
 }

@@ -16,6 +16,7 @@ import com.example.electivaiv.domain.model.PostComment
 import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.screens.addComment.AddCommentScreen
 import com.example.electivaiv.ui.screens.authorCommentProfile.AuthorCommentProfileScreen
+import com.example.electivaiv.ui.screens.commentDetail.CommentDetailScreen
 import com.example.electivaiv.ui.screens.login.LoginScreen
 import com.example.electivaiv.ui.screens.login.LoginViewModel
 import com.example.electivaiv.ui.screens.main.HomeScreen
@@ -75,8 +76,12 @@ fun MainNavigation(
                 onShowUserCommentProfile = { route, comment ->
                     val jsonObject = Json.encodeToString(comment)
                     val encodedComment = URLEncoder.encode(jsonObject, "UTF-8")
-                    navController.navigate("${route}/$encodedComment") {
-                    }
+                    navController.navigate("${route}/$encodedComment")
+                },
+                onShowCommentDetail = { route, comment ->
+                    val jsonObject = Json.encodeToString(comment)
+                    val encodedComment = URLEncoder.encode(jsonObject, "UTF-8")
+                    navController.navigate("${route}/$encodedComment")
                 }
             )
         }
@@ -99,6 +104,19 @@ fun MainNavigation(
                 Json.decodeFromString<PostComment>(decodedComment)
             }?.let { comment ->
                 AuthorCommentProfileScreen(comment)
+            }
+        }
+
+        composable(
+            route = "${ScreensRoutes.CommentDetail.route}/{comment}",
+            arguments = listOf(navArgument("comment") { type = NavType.StringType })
+        ) { navBackStackEntry ->
+            val encodedComment = navBackStackEntry.arguments?.getString("comment")
+            encodedComment?.let {
+                val decodedComment = URLDecoder.decode(it, "UTF-8")
+                Json.decodeFromString<PostComment>(decodedComment)
+            }?.let { comment ->
+                CommentDetailScreen(comment)
             }
         }
     }

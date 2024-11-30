@@ -31,5 +31,7 @@ class UserServiceSP @Inject constructor(
         sharedPreferences.sharedPreferences.getString(fieldCurrentUserName, null)
     fun getCurrentUserProfilePhoto(): String? =
         sharedPreferences.sharedPreferences.getString(fieldCurrentUserProfilePhoto, null)
-
+    fun verifyIsAuthor(uid: String): Boolean {
+        return uid == sharedPreferences.sharedPreferences.getString(fieldCurrentUserUid, null)
+    }
 }
