@@ -3,7 +3,6 @@ package com.example.electivaiv.ui.screens.authorCommentProfile
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +60,8 @@ fun AuthorCommentProfileScreen(
     val uiState by authorCommentProfileViewModel.uiState.collectAsState()
     var rate by remember { mutableStateOf(0.0) }
     var isFav by remember { mutableStateOf(false) }
+    val isAuthor = authorCommentProfileViewModel.verifyIsAuthor(comment.authorUid)
+
     authorCommentProfileViewModel.getCommentsByUser(comment.authorUid)
     LaunchedEffect(uiState.otherComments) {
         if (uiState.otherComments.isNotEmpty()) {
@@ -85,6 +87,7 @@ fun AuthorCommentProfileScreen(
                 comment = comment,
                 rate = rate,
                 isFav = isFav,
+                isAuthor = isAuthor,
                 onChangeFav = {
                     isFav = !isFav
                 }, modifier = Modifier.constrainAs(userInfoCard) {
@@ -116,6 +119,7 @@ fun UserInfoCard(
     comment: PostComment,
     rate: Double,
     isFav: Boolean,
+    isAuthor: Boolean,
     onChangeFav: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -163,8 +167,10 @@ fun UserInfoCard(
                 modifier = Modifier.constrainAs(favButton) {
                     top.linkTo(userName.top)
                     end.linkTo(parent.end, 20.dp)
-                },
-                colors = ButtonDefaults.buttonColors(Color.Transparent)
+                }.alpha(if (!isAuthor) 1f else 0f),
+                colors = ButtonDefaults.buttonColors(Color.Transparent),
+                enabled = !isAuthor,
+
             ) {
                 Icon(
                     imageVector = if (isFav) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,

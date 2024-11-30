@@ -1,10 +1,10 @@
 package com.example.electivaiv.ui.screens.authorCommentProfile
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.electivaiv.domain.model.PostComment
 import com.example.electivaiv.domain.usecase.GetCommentsByAuthorUseCase
+import com.example.electivaiv.domain.usecase.VerifyIsAuthorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthorCommentProfileViewModel @Inject constructor(
-    private val getCommentsByAuthorUseCase: GetCommentsByAuthorUseCase
+    private val getCommentsByAuthorUseCase: GetCommentsByAuthorUseCase,
+    private val verifyIsAuthorUseCase: VerifyIsAuthorUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthorCommentProfileUi())
@@ -33,5 +34,9 @@ class AuthorCommentProfileViewModel @Inject constructor(
             sum += comment.rate.toInt()
         }
         return (sum / comments.size).toDouble()
+    }
+
+    fun verifyIsAuthor(uid: String): Boolean {
+        return verifyIsAuthorUseCase.invoke(uid)
     }
 }
