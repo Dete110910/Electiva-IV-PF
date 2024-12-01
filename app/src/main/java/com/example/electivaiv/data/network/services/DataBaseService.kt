@@ -113,7 +113,6 @@ class DataBaseService @Inject constructor(
             }.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val downloadUri = task.result
-                    Log.d("TEST", "Imagen: $downloadUri")
                     urlList.add(downloadUri.toString())
                     Log.d(TEST_MESSAGE, "Register Successful image")
                 } else {
@@ -133,7 +132,6 @@ class DataBaseService @Inject constructor(
             commentsList = createComments(response.documents)
             commentsList = findCommentatorName(commentsList)
         }
-        Log.d("TEST", commentsList.toString())
         return commentsList
     }
 }

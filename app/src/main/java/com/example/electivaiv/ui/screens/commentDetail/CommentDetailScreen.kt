@@ -16,7 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -33,20 +32,26 @@ import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.commentDetailWithImagesCard
 import com.example.electivaiv.common.ext.commentDetailWithoutImagesCard
 import com.example.electivaiv.domain.model.PostComment
+import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.screens.addComment.LoadImages
 import com.example.electivaiv.ui.screens.main.RatingStars
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 
 @Composable
 fun CommentDetailScreen(
-    comment: PostComment
+    comment: PostComment,
+    onNavigate: (String, String) -> Unit
 ) {
     Scaffold(
         topBar = {
             Header()
         },
         bottomBar = {
-            Footer()
+            Footer(
+                onNavigate = { route, popUp ->
+                    onNavigate(route, popUp)
+                }
+            )
         }
     ) { innerPadding ->
         ConstraintLayout(
@@ -70,7 +75,9 @@ fun CommentDetailCard(comment: PostComment) {
         border = BorderStroke(0.5.dp, color = Color.Black)
     ) {
         ConstraintLayout(
-            modifier = Modifier.wrapContentHeight().fillMaxWidth()
+            modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
         ) {
             val (profilePhoto, commentTitle, commentRate, commentDescription, imagesRef) = createRefs()
 
@@ -147,6 +154,10 @@ fun PreviewCommentDetailScreen() {
         images
     )
     ElectivaIVTheme {
-        CommentDetailScreen(comment = comment)
+        CommentDetailScreen(
+            comment = comment,
+            onNavigate = { p , a ->
+            }
+        )
     }
 }
