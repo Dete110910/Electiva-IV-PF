@@ -1,5 +1,6 @@
 package com.example.electivaiv
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +22,7 @@ import com.example.electivaiv.ui.screens.login.LoginScreen
 import com.example.electivaiv.ui.screens.login.LoginViewModel
 import com.example.electivaiv.ui.screens.main.HomeScreen
 import com.example.electivaiv.ui.screens.singup.SingUpScreen
+import com.example.electivaiv.ui.screens.topRestaurants.TopRestaurantsScreen
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -82,6 +84,9 @@ fun MainNavigation(
                     val jsonObject = Json.encodeToString(comment)
                     val encodedComment = URLEncoder.encode(jsonObject, "UTF-8")
                     navController.navigate("${route}/$encodedComment")
+                },
+                onNavigate = { route ->
+                    navController.navigate(route)
                 }
             )
         }
@@ -103,7 +108,10 @@ fun MainNavigation(
                 val decodedComment = URLDecoder.decode(it, "UTF-8")
                 Json.decodeFromString<PostComment>(decodedComment)
             }?.let { comment ->
-                AuthorCommentProfileScreen(comment)
+                AuthorCommentProfileScreen(comment=  comment,
+                    onNavigate = { route ->
+                        navController.navigate(route)
+                    })
             }
         }
 
@@ -116,8 +124,17 @@ fun MainNavigation(
                 val decodedComment = URLDecoder.decode(it, "UTF-8")
                 Json.decodeFromString<PostComment>(decodedComment)
             }?.let { comment ->
-                CommentDetailScreen(comment)
+                CommentDetailScreen(
+                    comment = comment,
+                    onNavigate = { route ->
+                        navController.navigate(route)
+                    }
+                )
             }
+        }
+
+        composable(ScreensRoutes.TopRestaurantsScreen.route) {
+            TopRestaurantsScreen()
         }
     }
 }

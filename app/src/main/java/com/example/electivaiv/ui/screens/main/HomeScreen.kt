@@ -55,6 +55,7 @@ fun HomeScreen(
     onAddComment: (String) -> Unit,
     onShowUserCommentProfile: (String, PostComment) -> Unit,
     onShowCommentDetail: (String, PostComment) -> Unit,
+    onNavigate: (String) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
@@ -64,7 +65,11 @@ fun HomeScreen(
             Header()
         },
         bottomBar = {
-            Footer()
+            Footer(
+                onNavigate = {
+                    onNavigate(ScreensRoutes.TopRestaurantsScreen.route)
+                }
+            )
         },
         floatingActionButton = {
 
@@ -116,7 +121,6 @@ fun HomeScreen(
             }
 
             HandleHomeScreenLifecycle { state ->
-                Log.d("TEST", "$state")
                 when (state) {
                     Lifecycle.State.RESUMED -> {
                         homeViewModel.listDataBaseComments()
@@ -252,7 +256,10 @@ fun PreviewSignUpScreen() {
         HomeScreen(
             onAddComment = {},
             onShowUserCommentProfile = { a, b -> },
-            onShowCommentDetail = { a, b -> }
+            onShowCommentDetail = { a, b -> },
+            onNavigate = {
+
+            }
         )
     }
 }

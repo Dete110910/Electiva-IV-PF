@@ -13,9 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.electivaiv.common.ext.footerModifier
+import com.example.electivaiv.ui.navigation.ScreensRoutes
 
 @Composable
-fun Footer() {
+fun Footer(
+    onNavigate: (String) -> Unit
+) {
     ConstraintLayout(
         modifier = Modifier.footerModifier()
     ) {
@@ -52,14 +55,14 @@ fun Footer() {
                 disabledContentColor = Color.Transparent,
                 disabledContainerColor = Color.Gray,
 
-            )
+                )
         ) {
             Icon(Icons.Filled.Favorite, "Favorites Button", tint = Color.Black)
         }
 
         Button(
             onClick = {
-
+                onNavigate(ScreensRoutes.TopRestaurantsScreen.route)
             },
             modifier = Modifier.constrainAs(profileScreen) {
                 top.linkTo(mainScreen.top)

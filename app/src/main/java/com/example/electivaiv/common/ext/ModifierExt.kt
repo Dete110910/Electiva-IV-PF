@@ -3,7 +3,6 @@ package com.example.electivaiv.common.ext
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.ui.Modifier
@@ -77,4 +76,11 @@ fun Modifier.commentDetailWithoutImagesCard(): Modifier {
         .padding(6.dp, 2.dp, 6.dp, 2.dp)
         .fillMaxWidth()
         .wrapContentHeight()
+}
+
+fun Modifier.mainRestaurantCard(): Modifier {
+    return this
+        .fillMaxWidth()
+        .wrapContentHeight()
+        .padding(4.dp, 2.dp, 4.dp, 2.dp)
 }

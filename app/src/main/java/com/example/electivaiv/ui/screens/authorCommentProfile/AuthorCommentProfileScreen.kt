@@ -49,12 +49,14 @@ import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.authorCommentProfileCard
 import com.example.electivaiv.common.ext.minimizedCommentsCard
 import com.example.electivaiv.domain.model.PostComment
+import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.screens.main.RatingStars
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 
 @Composable
 fun AuthorCommentProfileScreen(
     comment: PostComment,
+    onNavigate: (String) -> Unit,
     authorCommentProfileViewModel: AuthorCommentProfileViewModel = hiltViewModel()
 ) {
     val uiState by authorCommentProfileViewModel.uiState.collectAsState()
@@ -66,7 +68,6 @@ fun AuthorCommentProfileScreen(
     LaunchedEffect(uiState.otherComments) {
         if (uiState.otherComments.isNotEmpty()) {
             rate = authorCommentProfileViewModel.getAverageRate(uiState.otherComments)
-            Log.d("TEST", "RATE: $rate")
         }
     }
     Scaffold(
@@ -74,7 +75,11 @@ fun AuthorCommentProfileScreen(
             Header()
         },
         bottomBar = {
-            Footer()
+            Footer(
+                onNavigate = {
+                    onNavigate(ScreensRoutes.TopRestaurantsScreen.route)
+                }
+            )
         }
     ) { innerPadding ->
         ConstraintLayout(
@@ -261,7 +266,10 @@ fun AuthorCommentProfileScreenPreview() {
     )
     ElectivaIVTheme {
         AuthorCommentProfileScreen(
-            comment = comment
+            comment = comment,
+            onNavigate = {
+
+            }
         )
     }
 }
