@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +41,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.rememberAsyncImagePainter
-import com.example.electivaiv.R
 import com.example.electivaiv.common.composable.Footer
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.mainCommentCard
@@ -55,7 +53,7 @@ fun HomeScreen(
     onAddComment: (String) -> Unit,
     onShowUserCommentProfile: (String, PostComment) -> Unit,
     onShowCommentDetail: (String, PostComment) -> Unit,
-    onNavigate: (String) -> Unit,
+    onNavigate: (String, String) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
@@ -66,8 +64,9 @@ fun HomeScreen(
         },
         bottomBar = {
             Footer(
-                onNavigate = {
-                    onNavigate(ScreensRoutes.TopRestaurantsScreen.route)
+                onNavigate = { route, popUp ->
+                    Log.d("TEST", "Pasé por homeScreen $route")
+                    onNavigate(route, popUp)
                 }
             )
         },
@@ -89,26 +88,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-/*
-            if (uiState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(10.dp, 100.dp)
-                )
-            } else {
-                LazyColumn {
-                    Log.d("TEST", "Lista antes de: ${uiState.commentsList}")
-                    items(uiState.commentsList) { comment ->
-                        comment?.let {
-                            MainCommentCard(it)
 
-                        }
-                    }
-                }
-            }
-
- */
             LazyColumn {
                 items(uiState.commentsList) { comment ->
                     MainCommentCard(
@@ -257,7 +237,7 @@ fun PreviewSignUpScreen() {
             onAddComment = {},
             onShowUserCommentProfile = { a, b -> },
             onShowCommentDetail = { a, b -> },
-            onNavigate = {
+            onNavigate = { a,b ->
 
             }
         )

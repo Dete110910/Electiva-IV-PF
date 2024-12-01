@@ -56,7 +56,7 @@ import com.example.electivaiv.ui.theme.ElectivaIVTheme
 @Composable
 fun AuthorCommentProfileScreen(
     comment: PostComment,
-    onNavigate: (String) -> Unit,
+    onNavigate: (String, String) -> Unit,
     authorCommentProfileViewModel: AuthorCommentProfileViewModel = hiltViewModel()
 ) {
     val uiState by authorCommentProfileViewModel.uiState.collectAsState()
@@ -76,8 +76,8 @@ fun AuthorCommentProfileScreen(
         },
         bottomBar = {
             Footer(
-                onNavigate = {
-                    onNavigate(ScreensRoutes.TopRestaurantsScreen.route)
+                onNavigate = { route, popUp ->
+                    onNavigate(route, popUp)
                 }
             )
         }
@@ -267,7 +267,7 @@ fun AuthorCommentProfileScreenPreview() {
     ElectivaIVTheme {
         AuthorCommentProfileScreen(
             comment = comment,
-            onNavigate = {
+            onNavigate = {a,b ->
 
             }
         )

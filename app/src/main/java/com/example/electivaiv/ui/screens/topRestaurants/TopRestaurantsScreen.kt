@@ -32,6 +32,7 @@ import com.example.electivaiv.ui.screens.main.RatingStars
 
 @Composable
 fun TopRestaurantsScreen(
+    onNavigate: (String, String) -> Unit,
     topRestaurantsViewModel: TopRestaurantsViewModel = hiltViewModel()
 ) {
     val uiState by topRestaurantsViewModel.uiState.collectAsState()
@@ -43,8 +44,8 @@ fun TopRestaurantsScreen(
         },
         bottomBar = {
             Footer(
-                onNavigate = {
-
+                onNavigate = { route, popUp ->
+                    onNavigate(route, popUp)
                 }
             )
         }

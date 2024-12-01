@@ -40,7 +40,7 @@ import com.example.electivaiv.ui.theme.ElectivaIVTheme
 @Composable
 fun CommentDetailScreen(
     comment: PostComment,
-    onNavigate: (String) -> Unit
+    onNavigate: (String, String) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -48,8 +48,8 @@ fun CommentDetailScreen(
         },
         bottomBar = {
             Footer(
-                onNavigate = {
-                    onNavigate(ScreensRoutes.TopRestaurantsScreen.route)
+                onNavigate = { route, popUp ->
+                    onNavigate(route, popUp)
                 }
             )
         }
@@ -156,8 +156,7 @@ fun PreviewCommentDetailScreen() {
     ElectivaIVTheme {
         CommentDetailScreen(
             comment = comment,
-            onNavigate = {
-
+            onNavigate = { p , a ->
             }
         )
     }

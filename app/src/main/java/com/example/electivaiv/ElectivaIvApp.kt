@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.electivaiv.domain.model.PostComment
@@ -66,6 +67,7 @@ fun ChooseNavigation(
 fun MainNavigation(
     navController: NavHostController, onAuthenticatedChange: (Boolean) -> Unit
 ) {
+    val currentDestination by navController.currentBackStackEntryAsState()
     NavHost(
         navController = navController,
         startDestination = ScreensRoutes.MainScreen.route
@@ -85,8 +87,12 @@ fun MainNavigation(
                     val encodedComment = URLEncoder.encode(jsonObject, "UTF-8")
                     navController.navigate("${route}/$encodedComment")
                 },
-                onNavigate = { route ->
-                    navController.navigate(route)
+                onNavigate = { route, popUp ->
+                    if (currentDestination?.destination?.route != route) {
+                        navController.navigate(route)
+                    } else {
+                        Log.d("TEST", "Estás navegando al mismo lado")
+                    }
                 }
             )
         }
@@ -108,9 +114,11 @@ fun MainNavigation(
                 val decodedComment = URLDecoder.decode(it, "UTF-8")
                 Json.decodeFromString<PostComment>(decodedComment)
             }?.let { comment ->
-                AuthorCommentProfileScreen(comment=  comment,
-                    onNavigate = { route ->
-                        navController.navigate(route)
+                AuthorCommentProfileScreen(comment = comment,
+                    onNavigate = { route, popUp ->
+                        navController.navigate(route) {
+                            popUpTo(popUp) { inclusive = true }
+                        }
                     })
             }
         }
@@ -126,15 +134,28 @@ fun MainNavigation(
             }?.let { comment ->
                 CommentDetailScreen(
                     comment = comment,
-                    onNavigate = { route ->
-                        navController.navigate(route)
+                    onNavigate = { route, popUp ->
+                        navController.navigate(route) {
+                            popUpTo(popUp) { inclusive = true }
+                        }
                     }
                 )
             }
         }
 
         composable(ScreensRoutes.TopRestaurantsScreen.route) {
-            TopRestaurantsScreen()
+
+            TopRestaurantsScreen(
+                onNavigate = { route, popUp ->
+                    if (currentDestination?.destination?.route != route) {
+                        navController.navigate(route){
+                            popUpTo(popUp) { inclusive = true }
+                        }
+                    } else {
+                        Log.d("TEST", "Estás navegando al mismo lado")
+                    }
+                }
+            )
         }
     }
 }
