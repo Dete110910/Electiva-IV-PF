@@ -70,6 +70,7 @@ class AuthorCommentProfileViewModel @Inject constructor(
                 }
                 val updatedLikeUser = likeUser(userUid, updatedLikes)
                 likeUserServiceSP.saveLikeUser(updatedLikeUser)
+                getLikesByUserUseCase.addLike(userUid, authorUid)
                 Log.d(TEST_MESSAGE, "authorUid guardado en SharedPreferences: $authorUid")
             }
         }
@@ -85,7 +86,8 @@ class AuthorCommentProfileViewModel @Inject constructor(
             }
             val updatedLikeUser = likeUser(userUid, updatedLikes)
             likeUserServiceSP.saveLikeUser(updatedLikeUser)
-            Log.d(TEST_MESSAGE, "authorUid removed from SharedPreferences: $authorUid")
+            getLikesByUserUseCase.removeLike(userUid, authorUid) // Remover de Firebase
+            Log.d(TEST_MESSAGE, "authorUid removed from SharedPreferences and Firebase: $authorUid")
         }
     }
 }

@@ -57,6 +57,8 @@ fun HomeScreen(
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
 
+
+
     Scaffold(
         topBar = {
             Header()
@@ -113,6 +115,7 @@ fun HomeScreen(
                 Log.d("TEST", "$state")
                 when (state) {
                     Lifecycle.State.RESUMED -> {
+                        homeViewModel.validateAndLoadLikes()
                         homeViewModel.listDataBaseComments()
                     }
 

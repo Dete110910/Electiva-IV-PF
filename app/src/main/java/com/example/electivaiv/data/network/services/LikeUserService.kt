@@ -40,15 +40,15 @@ class LikeUserService @Inject constructor(
         document.set(likeUser).await()
     }
 
-    suspend fun addLike(userId: String, likeUid: String) {
+    suspend fun addLike(userId: String, authorUid: String) {
         val document =
             firebaseClient.firestore.collection(Constants.USER_lIKES_COLLECTION).document(userId)
-        document.update("uidFavComments", FieldValue.arrayUnion(likeUid)).await()
+        document.update("uidFavComments", FieldValue.arrayUnion(authorUid)).await()
     }
 
-    suspend fun removeLike(userId: String, likeUid: String) {
+    suspend fun removeLike(userId: String, authorUid: String) {
         val document =
             firebaseClient.firestore.collection(Constants.USER_lIKES_COLLECTION).document(userId)
-        document.update("uidFavComments", FieldValue.arrayRemove(likeUid)).await()
+        document.update("uidFavComments", FieldValue.arrayRemove(authorUid)).await()
     }
 }

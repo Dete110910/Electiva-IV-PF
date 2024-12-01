@@ -14,4 +14,11 @@ class GetLikesByUserUseCase @Inject constructor(
     suspend fun saveLikeUser(likeUser: likeUser) {
         likeUserService.saveLikeUser(likeUser)
     }
+
+    suspend fun addLike(userId: String, authorUid: String) {
+        likeUserService.addLike(userId, authorUid)
+    }
+    suspend fun removeLike(userId: String, authorUid: String) {
+        likeUserService.removeLike(userId, authorUid)
+    }
 }
