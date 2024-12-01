@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
 import com.example.electivaiv.data.local.services.LikeUserServiceSP
 import com.example.electivaiv.domain.model.PostComment
+import com.example.electivaiv.domain.model.likeUser
 import com.example.electivaiv.domain.usecase.GetCommentsByAuthorUseCase
 import com.example.electivaiv.domain.usecase.GetLikesByUserUseCase
 import com.example.electivaiv.domain.usecase.LoginUseCase
@@ -44,18 +45,47 @@ class AuthorCommentProfileViewModel @Inject constructor(
         return (sum / comments.size).toDouble()
     }
 
-   fun isAuthorLiked(authorUid: String, onResult: (Boolean) -> Unit) {
+    fun isAuthorLiked(authorUid: String, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val userUid = loginUseCase.getSessionActive()
+            Log.d(TEST_MESSAGE, "Input author UID: $authorUid")
+            if (userUid != null) {
+                val likeUser = likeUserServiceSP.getLikeUser()
+                val isLiked = likeUser.uidFavComments.contains(authorUid)
+                Log.d(TEST_MESSAGE, "Is author UID in SharedPreferences: $isLiked")
+                onResult(isLiked)
+            } else {
+                Log.d(TEST_MESSAGE, "User UID is null")
+                onResult(false)
+            }
+        }
+    }
+    fun addAuthorToFavorites(authorUid: String) {
+        viewModelScope.launch {
+            val userUid = loginUseCase.getSessionActive()
+            if (userUid != null) {
+                val likeUser = likeUserServiceSP.getLikeUser()
+                val updatedLikes = likeUser.uidFavComments.toMutableList().apply {
+                    add(authorUid)
+                }
+                val updatedLikeUser = likeUser(userUid, updatedLikes)
+                likeUserServiceSP.saveLikeUser(updatedLikeUser)
+                Log.d(TEST_MESSAGE, "authorUid guardado en SharedPreferences: $authorUid")
+            }
+        }
+    }
+
+    fun removeAuthorFromFavorites(authorUid: String) {
     viewModelScope.launch {
         val userUid = loginUseCase.getSessionActive()
-        Log.d(TEST_MESSAGE, "Input author UID: $authorUid")
         if (userUid != null) {
             val likeUser = likeUserServiceSP.getLikeUser()
-            val isLiked = likeUser.uidFavComments.contains(authorUid)
-            Log.d(TEST_MESSAGE, "Is author UID in SharedPreferences: $isLiked")
-            onResult(isLiked)
-        } else {
-            Log.d(TEST_MESSAGE, "User UID is null")
-            onResult(false)
+            val updatedLikes = likeUser.uidFavComments.toMutableList().apply {
+                remove(authorUid)
+            }
+            val updatedLikeUser = likeUser(userUid, updatedLikes)
+            likeUserServiceSP.saveLikeUser(updatedLikeUser)
+            Log.d(TEST_MESSAGE, "authorUid removed from SharedPreferences: $authorUid")
         }
     }
 }

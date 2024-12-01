@@ -45,72 +45,51 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun validateAndLoadLikes() {
-        viewModelScope.launch {
-            try {
-                val userUid = loginUseCase.getSessionActive()
-                if (userUid != null) {
-                    val likeUser = likeUserServiceSP.getLikeUser()
-                    val isLocalDataValid =
-                        likeUser.userUId == userUid && likeUser.uidFavComments.isNotEmpty()
+   fun validateAndLoadLikes() {
+    viewModelScope.launch {
+        try {
+            Log.d(TEST_MESSAGE, "Inicio de validateAndLoadLikes")
+            val userUid = loginUseCase.getSessionActive()
+            Log.d(TEST_MESSAGE, "userUid: $userUid")
+            if (userUid != null) {
+                val likeUser = likeUserServiceSP.getLikeUser()
+                Log.d(TEST_MESSAGE, "likeUser desde SharedPreferences: $likeUser")
+                val isLocalDataValid =
+                    likeUser.userUId == userUid && likeUser.uidFavComments.isNotEmpty()
+                Log.d(TEST_MESSAGE, "isLocalDataValid: $isLocalDataValid")
 
-                    if (isLocalDataValid) {
-                        _uiState.value = _uiState.value.copy(likes = likeUser.uidFavComments)
+                if (isLocalDataValid) {
+                    _uiState.value = _uiState.value.copy(likes = likeUser.uidFavComments)
+                    Log.d(TEST_MESSAGE, "Likes cargados desde SharedPreferences: ${likeUser.uidFavComments}")
+                } else {
+                    val likes = getLikesByUserUseCase.invoke(userUid)
+                    if (likes.isEmpty()) {
+                        Log.d(TEST_MESSAGE, "No se encontraron likes en Firestore, creando nueva entrada")
+                        val newLikeUser = likeUser(userUid, emptyList())
+                        getLikesByUserUseCase.saveLikeUser(newLikeUser)
+                        likeUserServiceSP.saveLikeUser(newLikeUser)
+                        Log.d(TEST_MESSAGE, "likeUser guardado en Firestore y SharedPreferences: $newLikeUser")
+                        _uiState.value = _uiState.value.copy(likes = emptyList())
                     } else {
-                        val likes = getLikesByUserUseCase.invoke(userUid)
-                        likeUserServiceSP.saveLikeUser(likeUser(userUid, likes))
+                        Log.d(TEST_MESSAGE, "Likes obtenidos de Firestore: $likes")
+                        val updatedLikeUser = likeUser(userUid, likes)
+                        likeUserServiceSP.saveLikeUser(updatedLikeUser)
+                        Log.d(TEST_MESSAGE, "likeUser guardado en SharedPreferences: $updatedLikeUser")
                         _uiState.value = _uiState.value.copy(likes = likes)
                     }
-                    isLikesLoaded.postValue(true)
-                } else {
-                    Log.d(TEST_MESSAGE, "userUid es null")
-                    isLikesLoaded.postValue(false)
                 }
-            } catch (e: Exception) {
-                Log.e(TEST_MESSAGE, "Error al recuperar likes: ${e.message}")
+                isLikesLoaded.postValue(true)
+                Log.d(TEST_MESSAGE, "Likes cargados exitosamente")
+            } else {
+                Log.d(TEST_MESSAGE, "userUid es null")
                 isLikesLoaded.postValue(false)
             }
+        } catch (e: Exception) {
+            Log.e(TEST_MESSAGE, "Error al recuperar likes: ${e.message}", e)
+            isLikesLoaded.postValue(false)
         }
     }
+}
 
-    fun syncLikes() {
-        viewModelScope.launch {
-            try {
-                val userUid = loginUseCase.getSessionActive()
-                if (userUid != null) {
-                    val localLikeUser = likeUserServiceSP.getLikeUser()
-                    val firebaseLikes = getLikesByUserUseCase.invoke(userUid)
 
-                    val localLikesSet = localLikeUser.uidFavComments.toSet()
-                    val firebaseLikesSet = firebaseLikes.toSet()
-
-                    when {
-                        localLikesSet.size > firebaseLikesSet.size -> {
-                            // Actualizar Firebase con los datos locales
-                            val updatedLikes = localLikesSet.union(firebaseLikesSet).toList()
-                            likeUserServiceSP.saveLikeUser(likeUser(userUid, updatedLikes))
-                            Log.d(TEST_MESSAGE, "Firebase actualizado con datos locales")
-                        }
-                        firebaseLikesSet.size > localLikesSet.size -> {
-                            // Actualizar datos locales con los datos de Firebase
-                            likeUserServiceSP.saveLikeUser(likeUser(userUid, firebaseLikes))
-                            Log.d(TEST_MESSAGE, "Datos locales actualizados con datos de Firebase")
-                        }
-                        else -> {
-                            Log.d(TEST_MESSAGE, "Los datos locales y de Firebase están sincronizados")
-                        }
-                    }
-
-                    _uiState.value = _uiState.value.copy(likes = firebaseLikes)
-                    isLikesLoaded.postValue(true)
-                } else {
-                    Log.d(TEST_MESSAGE, "userUid es null")
-                    isLikesLoaded.postValue(false)
-                }
-            } catch (e: Exception) {
-                Log.e(TEST_MESSAGE, "Error al sincronizar likes: ${e.message}")
-                isLikesLoaded.postValue(false)
-            }
-        }
-    }
 }

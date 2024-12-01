@@ -95,6 +95,11 @@ fun AuthorCommentProfileScreen(
                 isFav = isFav,
                 onChangeFav = {
                     isFav = !isFav
+                    if (isFav) {
+                        authorCommentProfileViewModel.addAuthorToFavorites(comment.authorUid)
+                    }else{
+                        authorCommentProfileViewModel.removeAuthorFromFavorites(comment.authorUid)
+                    }
                 }, modifier = Modifier.constrainAs(userInfoCard) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -167,6 +172,7 @@ fun UserInfoCard(
             Button(
                 onClick = {
                     onChangeFav(!isFav)
+
                 },
                 modifier = Modifier.constrainAs(favButton) {
                     top.linkTo(userName.top)

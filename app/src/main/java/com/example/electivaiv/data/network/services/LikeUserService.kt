@@ -35,6 +35,11 @@ class LikeUserService @Inject constructor(
         return uidList
     }
 
+    suspend fun saveLikeUser(likeUser: likeUser) {
+        val document = firebaseClient.firestore.collection(Constants.USER_lIKES_COLLECTION).document(likeUser.userUId)
+        document.set(likeUser).await()
+    }
+
     suspend fun addLike(userId: String, likeUid: String) {
         val document =
             firebaseClient.firestore.collection(Constants.USER_lIKES_COLLECTION).document(userId)
