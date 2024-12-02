@@ -139,5 +139,4 @@ fun AuthNavigation(
             )
         }
     }
-
 }
