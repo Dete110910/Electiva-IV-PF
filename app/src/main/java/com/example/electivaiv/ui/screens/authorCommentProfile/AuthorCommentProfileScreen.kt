@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -31,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -48,12 +50,14 @@ import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.authorCommentProfileCard
 import com.example.electivaiv.common.ext.minimizedCommentsCard
 import com.example.electivaiv.domain.model.PostComment
+import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.screens.main.RatingStars
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 
 @Composable
 fun AuthorCommentProfileScreen(
     comment: PostComment,
+    onNavigate: (String, String) -> Unit,
     authorCommentProfileViewModel: AuthorCommentProfileViewModel = hiltViewModel()
 ) {
     val uiState by authorCommentProfileViewModel.uiState.collectAsState()
@@ -67,12 +71,12 @@ fun AuthorCommentProfileScreen(
         }
     }
 
+    val isAuthor = authorCommentProfileViewModel.verifyIsAuthor(comment.authorUid)
 
     authorCommentProfileViewModel.getCommentsByUser(comment.authorUid)
     LaunchedEffect(uiState.otherComments) {
         if (uiState.otherComments.isNotEmpty()) {
             rate = authorCommentProfileViewModel.getAverageRate(uiState.otherComments)
-            Log.d("TEST", "RATE: $rate")
         }
     }
     Scaffold(
@@ -80,7 +84,11 @@ fun AuthorCommentProfileScreen(
             Header()
         },
         bottomBar = {
-            Footer()
+            Footer(
+                onNavigate = { route, popUp ->
+                    onNavigate(route, popUp)
+                }
+            )
         }
     ) { innerPadding ->
         ConstraintLayout(
@@ -93,6 +101,7 @@ fun AuthorCommentProfileScreen(
                 comment = comment,
                 rate = rate,
                 isFav = isFav,
+                isAuthor = isAuthor,
                 onChangeFav = {
                     isFav = !isFav
                     if (isFav) {
@@ -129,6 +138,7 @@ fun UserInfoCard(
     comment: PostComment,
     rate: Double,
     isFav: Boolean,
+    isAuthor: Boolean,
     onChangeFav: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -177,8 +187,10 @@ fun UserInfoCard(
                 modifier = Modifier.constrainAs(favButton) {
                     top.linkTo(userName.top)
                     end.linkTo(parent.end, 20.dp)
-                },
-                colors = ButtonDefaults.buttonColors(Color.Transparent)
+                }.alpha(if (!isAuthor) 1f else 0f),
+                colors = ButtonDefaults.buttonColors(Color.Transparent),
+                enabled = !isAuthor,
+
             ) {
                 Icon(
                     imageVector = if (isFav) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
@@ -215,7 +227,7 @@ fun MinimizedCommentsCard(comment: PostComment) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .wrapContentHeight()
         ) {
             val (restName, restRate, description) = createRefs()
             val fontSize = 18.sp
@@ -227,7 +239,6 @@ fun MinimizedCommentsCard(comment: PostComment) {
                 modifier = Modifier.constrainAs(restName) {
                     top.linkTo(parent.top, 15.dp)
                     start.linkTo(parent.start, 15.dp)
-                    bottom.linkTo(description.top, 20.dp)
                 }
             )
             Text(
@@ -237,16 +248,18 @@ fun MinimizedCommentsCard(comment: PostComment) {
                 modifier = Modifier.constrainAs(restRate) {
                     top.linkTo(parent.top, 15.dp)
                     start.linkTo(restName.end, 30.dp)
-                    bottom.linkTo(description.top, 20.dp)
                 }
             )
             Text(
                 text = comment.text,
                 fontSize = fontSize,
                 modifier = Modifier.constrainAs(description) {
-                    top.linkTo(restName.bottom, 20.dp)
-                    start.linkTo(restName.start)
-                },
+                    top.linkTo(restName.bottom, 15.dp)
+                    start.linkTo(restName.start, 15.dp)
+                    end.linkTo(parent.end, 5.dp)
+                    bottom.linkTo(parent.bottom, 15.dp)
+                }
+                    .fillMaxWidth(),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -268,7 +281,10 @@ fun AuthorCommentProfileScreenPreview() {
     )
     ElectivaIVTheme {
         AuthorCommentProfileScreen(
-            comment = comment
+            comment = comment,
+            onNavigate = {a,b ->
+
+            }
         )
     }
 }

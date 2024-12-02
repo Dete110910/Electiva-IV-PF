@@ -11,6 +11,7 @@ import com.example.electivaiv.domain.model.likeUser
 import com.example.electivaiv.domain.usecase.GetCommentsByAuthorUseCase
 import com.example.electivaiv.domain.usecase.GetLikesByUserUseCase
 import com.example.electivaiv.domain.usecase.LoginUseCase
+import com.example.electivaiv.domain.usecase.VerifyIsAuthorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +25,7 @@ class AuthorCommentProfileViewModel @Inject constructor(
     private val getLikesByUserUseCase: GetLikesByUserUseCase,
     private val loginUseCase: LoginUseCase,
     private val likeUserServiceSP: LikeUserServiceSP,
+    private val verifyIsAuthorUseCase: VerifyIsAuthorUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthorCommentProfileUi())
@@ -91,4 +93,7 @@ class AuthorCommentProfileViewModel @Inject constructor(
         }
     }
 }
+    fun verifyIsAuthor(uid: String): Boolean {
+        return verifyIsAuthorUseCase.invoke(uid)
+    }
 }

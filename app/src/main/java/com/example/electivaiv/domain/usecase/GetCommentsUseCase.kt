@@ -5,7 +5,7 @@ import com.example.electivaiv.domain.model.PostComment
 import javax.inject.Inject
 
 class GetCommentsUseCase @Inject constructor(
-    private val dataBaseService: DataBaseService
+        private val dataBaseService: DataBaseService
 ) {
     suspend fun invoke(): List<PostComment> {
         return dataBaseService.getComments()
