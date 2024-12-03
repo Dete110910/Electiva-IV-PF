@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -48,6 +49,7 @@ import coil.compose.rememberAsyncImagePainter
 
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.textCardModifier
+import com.example.electivaiv.common.notification.ToastUtil
 import com.example.electivaiv.domain.model.PostComment
 
 @Composable
@@ -56,20 +58,16 @@ fun AddCommentScreen(
     addCommentViewModel: AddCommentViewModel = hiltViewModel(),
 ) {
     var launchPicker by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-    Scaffold(
-        topBar = { Header() },
-        floatingActionButton = {
+    Scaffold(topBar = { Header() }, floatingActionButton = {
 
-            FloatingActionButton(
-                onClick = {
-                    launchPicker = true
-                }
-            ) {
-                Icon(Icons.Filled.Add, "Floating action button.")
-            }
+        FloatingActionButton(onClick = {
+            launchPicker = true
+        }) {
+            Icon(Icons.Filled.Add, "Floating action button.")
         }
-    ) { innerPadding ->
+    }) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
@@ -86,7 +84,7 @@ fun AddCommentScreen(
             ) { uris ->
                 if (uris.isNotEmpty()) {
                     urisList = uris
-                    addCommentViewModel.saveImages(uris = uris)
+                    addCommentViewModel.saveImages(context, uris = uris)
                     Log.d("PhotoPicker", "Number of items selected: ${uris.size}")
                 } else {
                     Log.d("PhotoPicker", "No media selected")
@@ -103,63 +101,53 @@ fun AddCommentScreen(
             }
             val (restaurantNameRef, descriptionRef, ratingButtonRef, imagesRef, saveButtonRef, cancelButtonRef) = createRefs()
 
-            AddTextTextField(
-                cardModifier = Modifier
-                    .textCardModifier()
-                    .constrainAs(restaurantNameRef) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                    },
+            AddTextTextField(cardModifier = Modifier
+                .textCardModifier()
+                .constrainAs(restaurantNameRef) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                },
                 textFieldModifier = Modifier.fillMaxWidth(),
                 label = "Nombre del restaurante",
                 value = restaurantName,
                 onValueChange = { newValue ->
                     restaurantName = newValue
+                })
+            AddTextTextField(cardModifier = Modifier
+                .textCardModifier()
+                .constrainAs(descriptionRef) {
+                    top.linkTo(restaurantNameRef.bottom)
+                    start.linkTo(restaurantNameRef.start)
                 }
-            )
-            AddTextTextField(
-                cardModifier = Modifier
-                    .textCardModifier()
-                    .constrainAs(descriptionRef) {
-                        top.linkTo(restaurantNameRef.bottom)
-                        start.linkTo(restaurantNameRef.start)
-                    }
-                    .verticalScroll(rememberScrollState())
-                    .heightIn(min = 60.dp),
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = 60.dp),
                 textFieldModifier = Modifier.fillMaxWidth(),
                 label = "Cuenta tu experiencia",
                 value = description,
                 maxLines = 20,
                 onValueChange = { newValue ->
                     description = newValue
-                }
-            )
+                })
 
-            StarRating(
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .constrainAs(ratingButtonRef) {
-                        top.linkTo(descriptionRef.bottom)
-                        start.linkTo(restaurantNameRef.start)
-                        end.linkTo(restaurantNameRef.end)
-                        bottom.linkTo(imagesRef.top)
-                    },
-                currentRating = rating,
-                onRatingSelected = { newRating ->
-                    rating = newRating
-                }
-            )
+            StarRating(modifier = Modifier
+                .padding(bottom = 16.dp)
+                .constrainAs(ratingButtonRef) {
+                    top.linkTo(descriptionRef.bottom)
+                    start.linkTo(restaurantNameRef.start)
+                    end.linkTo(restaurantNameRef.end)
+                    bottom.linkTo(imagesRef.top)
+                }, currentRating = rating, onRatingSelected = { newRating ->
+                rating = newRating
+            })
 
-            LazyRow (
-                modifier = Modifier.constrainAs(imagesRef){
-                    top.linkTo(ratingButtonRef.bottom)
-                    start.linkTo(ratingButtonRef.start)
-                    end.linkTo(ratingButtonRef.end)
-                    bottom.linkTo(saveButtonRef.top)
+            LazyRow(modifier = Modifier.constrainAs(imagesRef) {
+                top.linkTo(ratingButtonRef.bottom)
+                start.linkTo(ratingButtonRef.start)
+                end.linkTo(ratingButtonRef.end)
+                bottom.linkTo(saveButtonRef.top)
 
-                }
-            ) {
-                items(urisList){ uri ->
+            }) {
+                items(urisList) { uri ->
                     LoadImages(uri)
                 }
             }
@@ -177,8 +165,10 @@ fun AddCommentScreen(
                             description,
                             images
                         )
-                        addCommentViewModel.saveComment(newComment)
+                        addCommentViewModel.saveComment(context, newComment)
                         onCloseUi()
+                    } else {
+                        ToastUtil.showToast(context, "Por favor, complete todos los campos")
                     }
                 },
                 modifier = Modifier
@@ -195,8 +185,7 @@ fun AddCommentScreen(
                 )
             }
 
-            Button(
-                onClick = onCloseUi,
+            Button(onClick = onCloseUi,
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(cancelButtonRef) {
@@ -223,21 +212,16 @@ fun AddTextTextField(
     label: String = "",
     value: String,
     maxLines: Int = 1,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedCard(
         modifier = cardModifier
     ) {
-        TextField(
-            label = {
-                Text(label)
-            },
-            modifier = textFieldModifier,
-            value = value,
-            onValueChange = {
-                onValueChange(it)
-            },
-            maxLines = maxLines
+        TextField(label = {
+            Text(label)
+        }, modifier = textFieldModifier, value = value, onValueChange = {
+            onValueChange(it)
+        }, maxLines = maxLines
         )
     }
 }
@@ -246,11 +230,10 @@ fun AddTextTextField(
 fun StarRating(
     modifier: Modifier = Modifier,
     currentRating: Int,
-    onRatingSelected: (Int) -> Unit
+    onRatingSelected: (Int) -> Unit,
 ) {
     Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.Center
+        modifier = modifier, horizontalArrangement = Arrangement.Center
     ) {
         for (i in 1..5) {
             Icon(
@@ -270,19 +253,19 @@ fun LoadImages(
     uri: Uri,
     modifier: Modifier = Modifier,
     size: Dp = 120.dp,
-    padding: Dp = 8.dp
+    padding: Dp = 8.dp,
 ) {
     Image(
         painter = rememberAsyncImagePainter(model = uri),
         contentDescription = "Selected Image",
-        modifier = modifier.size(size).padding(padding)
+        modifier = modifier
+            .size(size)
+            .padding(padding)
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewAddCommentScreen() {
-    AddCommentScreen(
-        onCloseUi = { }
-    )
+    AddCommentScreen(onCloseUi = { })
 }
