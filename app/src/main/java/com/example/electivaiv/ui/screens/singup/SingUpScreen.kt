@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.electivaiv.common.composable.BasicButton
 import com.example.electivaiv.common.composable.BasicField
@@ -26,7 +27,6 @@ import com.example.electivaiv.ui.navigation.ScreensRoutes
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 import com.example.electivaiv.R.string as AppText
 
-
 @Composable
 fun SingUpScreen(
     openAndPopUp: (String, String) -> Unit,
@@ -37,6 +37,7 @@ fun SingUpScreen(
     val uiState by singUpViewModel.uiState
     val user by singUpViewModel.userCreated.collectAsState()
     val fieldModifier = Modifier.fieldModifier()
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -50,12 +51,12 @@ fun SingUpScreen(
         BasicField(AppText.user_name, uiState.name, singUpViewModel::onNameChange, fieldModifier)
         BasicField(AppText.user_last_name, uiState.lastName, singUpViewModel::onLastNameChange, fieldModifier)
         EmailField(uiState.email, singUpViewModel::onEmailChange, fieldModifier)
-        PasswordField(AppText.password,uiState.password, singUpViewModel::onPasswordChange, fieldModifier)
+        PasswordField(AppText.password, uiState.password, singUpViewModel::onPasswordChange, fieldModifier)
         PasswordField(AppText.confirm_password, uiState.confirmPassword, singUpViewModel::onConfirmPasswordChange, fieldModifier)
-        BasicButton(AppText.create_account, Modifier.basicButton()){
-            singUpViewModel.onSignUpClick(openAndPopUp)
+        BasicButton(AppText.create_account, Modifier.basicButton()) {
+            singUpViewModel.onSignUpClick(context, openAndPopUp)
         }
-        BasicButton(AppText.cancel, Modifier.basicButton()){
+        BasicButton(AppText.cancel, Modifier.basicButton()) {
             openAndPopUp(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
         }
         LaunchedEffect(user) {
@@ -71,7 +72,7 @@ fun SingUpScreen(
 fun PreviewSignUpScreen() {
     ElectivaIVTheme {
         SingUpScreen(
-            openAndPopUp = { route, popUp ->}
+            openAndPopUp = { route, popUp -> }
         )
     }
 }

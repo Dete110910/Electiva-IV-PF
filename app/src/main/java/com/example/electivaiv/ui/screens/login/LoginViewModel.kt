@@ -1,5 +1,6 @@
 package com.example.electivaiv.ui.screens.login
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,12 +10,14 @@ import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
 import com.example.electivaiv.common.Constants.Companion.VALID_EMAIL_MESSAGE
 import com.example.electivaiv.common.ext.isValidEmail
 import com.example.electivaiv.common.ext.isValidPassword
+import com.example.electivaiv.common.notification.ToastUtil
 import com.example.electivaiv.data.local.SharedPreferences
 import com.example.electivaiv.domain.usecase.LoginUseCase
 import com.example.electivaiv.ui.navigation.ScreensRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -39,15 +42,20 @@ class LoginViewModel @Inject constructor(
     suspend fun login(email: String, password: String): Any? =
         loginUseCase.invoke(email, password)
 
-    fun onLoginInClick(onAuthenticatedChange: (Boolean) -> Unit
-    ) {
+    fun onLoginInClick(context: Context?, onAuthenticatedChange: (Boolean) -> Unit) {
+        if (context == null) {
+            Log.d(TEST_MESSAGE, "Context is null")
+            return
+        }
         if (!email.isValidEmail()) {
             Log.d(TEST_MESSAGE, VALID_EMAIL_MESSAGE)
+            ToastUtil.showToast(context, VALID_EMAIL_MESSAGE)
             return
         }
 
         if (!password.isValidPassword()) {
             Log.d(TEST_MESSAGE, MINIMUM_PASSWORD_LENGTH_MESSAGE)
+            ToastUtil.showToast(context, MINIMUM_PASSWORD_LENGTH_MESSAGE)
             return
         }
 
@@ -55,9 +63,11 @@ class LoginViewModel @Inject constructor(
             val result = login(email, password)
             if (result != null) {
                 Log.d(TEST_MESSAGE, "Inicio de sesion correcto")
+                ToastUtil.showToast(context, "Inicio de sesión correcto")
                 onAuthenticatedChange(true)
             } else {
                 Log.d(TEST_MESSAGE, "Error logging in")
+                ToastUtil.showToast(context, "Error al iniciar sesión")
             }
         }
     }

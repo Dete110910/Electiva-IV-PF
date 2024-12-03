@@ -1,5 +1,6 @@
 package com.example.electivaiv.ui.screens.singup
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
 import com.example.electivaiv.common.Constants.Companion.VALID_EMAIL_MESSAGE
 import com.example.electivaiv.common.ext.isValidPassword
 import com.example.electivaiv.common.ext.isValidEmail
+import com.example.electivaiv.common.notification.ToastUtil
 import com.example.electivaiv.domain.model.User
 import com.example.electivaiv.domain.usecase.SignUpUseCase
 import com.example.electivaiv.ui.navigation.ScreensRoutes
@@ -23,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SingUpViewModel @Inject constructor(
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
 ) : ViewModel() {
 
     var uiState = mutableStateOf(SingUpUiState())
@@ -56,29 +58,40 @@ class SingUpViewModel @Inject constructor(
         uiState.value = uiState.value.copy(lastName = newValue)
     }
 
-    fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
-        if (uiState.value.name.trim() == "") {
-            Log.d(TEST_MESSAGE, ENTER_NAME_MESSAGE)
+    fun onSignUpClick(context: Context?, openAndPopUp: (String, String) -> Unit) {
+        if (context == null) {
+            Log.d(TEST_MESSAGE, "Context is null")
             return
         }
-        if (uiState.value.lastName.trim() == "") {
+
+        if (uiState.value.name.trim().isEmpty()) {
+            Log.d(TEST_MESSAGE, ENTER_NAME_MESSAGE)
+            ToastUtil.showToast(context, ENTER_NAME_MESSAGE)
+            return
+        }
+        if (uiState.value.lastName.trim().isEmpty()) {
             Log.d(TEST_MESSAGE, ENTER_LAST_NAME_MESSAGE)
+            ToastUtil.showToast(context, ENTER_LAST_NAME_MESSAGE)
             return
         }
         if (!email.isValidEmail()) {
             Log.d(TEST_MESSAGE, VALID_EMAIL_MESSAGE)
+            ToastUtil.showToast(context, VALID_EMAIL_MESSAGE)
             return
         }
 
         if (!password.isValidPassword()) {
             Log.d(TEST_MESSAGE, MINIMUM_PASSWORD_LENGTH_MESSAGE)
+            ToastUtil.showToast(context, MINIMUM_PASSWORD_LENGTH_MESSAGE)
             return
         }
 
         if (password != uiState.value.confirmPassword) {
             Log.d(TEST_MESSAGE, PASSWORDS_DO_NOT_MATCH_MESSAGE)
+            ToastUtil.showToast(context, PASSWORDS_DO_NOT_MATCH_MESSAGE)
             return
         }
+
         val user = User(
             uiState.value.name,
             uiState.value.lastName,
@@ -86,14 +99,18 @@ class SingUpViewModel @Inject constructor(
             uiState.value.password,
             "https://firebasestorage.googleapis.com/v0/b/electiva-iv-593f3.firebasestorage.app/o/img_profile_photo.png?alt=media&token=5ca66a03-b215-4aca-8889-d65499a030db"
         )
+
         viewModelScope.launch {
             val uid = signUpUseCase.invoke(user.email, user.password)
             if (uid != null) {
                 user.uid = uid
                 _userCreated.value = user
+                ToastUtil.showToast(context, "Registro exitoso")
                 openAndPopUp(ScreensRoutes.LoginScreen.route, ScreensRoutes.SignUpScreen.route)
-            } else
+            } else {
                 Log.d(TEST_MESSAGE, "Error signing up")
+                ToastUtil.showToast(context, "Error al registrarse")
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.electivaiv.common.composable.BasicButton
@@ -32,6 +33,7 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState
     val fieldModifier = Modifier.fieldModifier()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.getSessionLocalActive { route ->
@@ -49,7 +51,7 @@ fun LoginScreen(
         EmailField(uiState.email, viewModel::onEmailChange, fieldModifier)
         PasswordField(AppText.password, uiState.password, viewModel::onPasswordChange, fieldModifier)
         BasicButton(AppText.login, Modifier.basicButton()) {
-            viewModel.onLoginInClick(onAuthenticatedChange)
+            viewModel.onLoginInClick(context,onAuthenticatedChange)
         }
         BasicButton(AppText.register, Modifier.basicButton()) {
             openScreen(ScreensRoutes.SignUpScreen.route, ScreensRoutes.LoginScreen.route)
