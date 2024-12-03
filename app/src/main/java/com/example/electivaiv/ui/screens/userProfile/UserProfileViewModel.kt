@@ -1,8 +1,10 @@
 package com.example.electivaiv.ui.screens.userProfile
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.electivaiv.common.notification.ToastUtil
 import com.example.electivaiv.domain.usecase.GetUserInfoByParameterUseCase
 import com.example.electivaiv.domain.usecase.GetUserLocalNameUseCase
 import com.example.electivaiv.domain.usecase.GetUserProfilePhotoUseCase
@@ -48,12 +50,15 @@ class UserProfileViewModel @Inject constructor(
         }
     }
 
-    fun saveProfilePhoto(uri: Uri) {
+    fun saveProfilePhoto(context: Context, uri: Uri) {
         viewModelScope.launch {
             val response = saveUserProfilePhotoUseCase.invoke(uri)
-            _uiState.value = _uiState.value.copy(
-                profilePhoto = response
-            )
+            if (response.isNotEmpty()) {
+                _uiState.value = _uiState.value.copy(profilePhoto = response)
+                ToastUtil.showToast(context, "Foto de perfil guardada exitosamente")
+            } else {
+                ToastUtil.showToast(context, "Error al guardar la foto de perfil")
+            }
         }
     }
 

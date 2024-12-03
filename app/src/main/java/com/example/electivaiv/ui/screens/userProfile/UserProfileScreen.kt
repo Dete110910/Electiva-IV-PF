@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -40,6 +41,9 @@ fun UserProfileScreen(
     onNavigate: (String, String) -> Unit,
     userProfileViewModel: UserProfileViewModel = hiltViewModel()
 ) {
+
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             Header()
@@ -66,7 +70,7 @@ fun UserProfileScreen(
                 ActivityResultContracts.PickVisualMedia()
             ) { uris ->
                 if (uris != null) {
-                    userProfileViewModel.saveProfilePhoto(uri = uris)
+                    userProfileViewModel.saveProfilePhoto(context,uri = uris)
                 }
             }
 
