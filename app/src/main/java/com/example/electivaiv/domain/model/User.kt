@@ -7,5 +7,4 @@ data class User(
     val password: String,
     val profilePhoto: String,
     var uid: String = ""
-) {
-}
+)

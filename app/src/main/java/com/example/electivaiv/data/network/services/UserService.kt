@@ -32,26 +32,61 @@ class UserService @Inject constructor(
         }
     }
 
-   suspend fun getUserByUid(uid: String): UserSP? {
-    return try {
-        val documents = firebaseClient.firestore.collection(USERS_COLLECTION)
-            .whereEqualTo("uid", uid)
-            .get().await().documents
+    suspend fun getUserByUid(uid: String): UserSP? {
+        return try {
+            val documents = firebaseClient.firestore.collection(USERS_COLLECTION)
+                .whereEqualTo("uid", uid)
+                .get().await().documents
 
-        if (documents.isNotEmpty()) {
-            val user = documents[0]
-            val path = user.reference.path
-            val name = user.getString(Constants.NAME)!!
-            val profilePhoto = user.getString(Constants.PROFILE_PHOTO)!!
-            Log.d(TEST_MESSAGE, "User found: $uid")
-            return UserSP(path, uid, name, profilePhoto)
-        } else {
-            Log.d(TEST_MESSAGE, "No user found with uid: $uid")
+            if (documents.isNotEmpty()) {
+                val user = documents[0]
+                val path = user.reference.path
+                val name = user.getString(Constants.NAME)!!
+                val profilePhoto = user.getString(Constants.PROFILE_PHOTO)!!
+                Log.d(TEST_MESSAGE, "User found: $uid")
+                return UserSP(path, uid, name, profilePhoto)
+            } else {
+                Log.d(TEST_MESSAGE, "No user found with uid: $uid")
+                null
+            }
+        } catch (e: Exception) {
+            Log.d(TEST_MESSAGE, "Error fetching user: ${e.message}")
             null
         }
-    } catch (e: Exception) {
-        Log.d(TEST_MESSAGE, "Error fetching user: ${e.message}")
-        null
     }
-}
+
+    suspend fun getUsersByUids(uids: List<String>): List<User> {
+        val users = mutableListOf<User>()
+        for (uid in uids) {
+            val user = getUserByUidLike(uid)
+            if (user != null) {
+                users.add(user)
+            }
+        }
+        return users
+    }
+
+    suspend fun getUserByUidLike(uid: String): User? {
+        return try {
+            val documents = firebaseClient.firestore.collection(USERS_COLLECTION)
+                .whereEqualTo("uid", uid)
+                .get().await().documents
+
+            if (documents.isNotEmpty()) {
+                val user = documents[0]
+                val name = user.getString("name")!!
+                val lastName = user.getString("lastName")!!
+                val email = user.getString("email")!!
+                val profilePhoto = user.getString("profilePhoto")!!
+                Log.d(TEST_MESSAGE, "User found: $uid")
+                return User(name, lastName, email, "", profilePhoto, uid)
+            } else {
+                Log.d(TEST_MESSAGE, "No user found with uid: $uid")
+                null
+            }
+        } catch (e: Exception) {
+            Log.d(TEST_MESSAGE, "Error fetching user: ${e.message}")
+            null
+        }
+    }
 }

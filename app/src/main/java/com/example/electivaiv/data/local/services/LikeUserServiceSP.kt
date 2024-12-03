@@ -37,4 +37,8 @@ class LikeUserServiceSP @Inject constructor(
         sharedPreferences.editor.putStringSet(fieldUserLikeListUid, currentList)
         sharedPreferences.editor.apply()
     }
+
+    fun getAllUidsFromList(): List<String> {
+        return sharedPreferences.sharedPreferences.getStringSet(fieldUserLikeListUid, emptySet())?.toList() ?: emptyList()
+    }
 }
