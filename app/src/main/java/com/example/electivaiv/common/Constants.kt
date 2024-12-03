@@ -11,6 +11,7 @@ class Constants {
         //Firebase
         const val USERS_COLLECTION = "users"
         const val COMMENTS_COLLECTION = "comments"
+        const val USER_lIKES_COLLECTION = "userLikes"
         const val UID = "uid"
         const val NAME = "name"
         const val PROFILE_PHOTO = "profilePhoto"
@@ -44,6 +45,9 @@ class Constants {
         const val RATE = "rate"
         const val RESTAURANT_NAME = "restaurantName"
         const val TEXT = "text"
+
+        //likes
+        const val USER_UID = "userUId"
     }
 
 }

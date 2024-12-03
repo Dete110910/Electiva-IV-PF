@@ -9,4 +9,6 @@ sealed class ScreensRoutes(val route: String) {
     object CommentDetail : ScreensRoutes("CommentDetailScreen")
     object TopRestaurantsScreen : ScreensRoutes("TopRestaurantsScreen")
     object UserProfileScreen : ScreensRoutes("UserProfileScreen")
+    object UsersWithLikesScreen : ScreensRoutes("UsersWithLikesScreen")
+
 }

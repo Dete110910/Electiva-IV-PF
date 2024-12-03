@@ -47,6 +47,7 @@ fun Footer(
         Button(
             onClick = {
                 Log.d("TEST", "Presionando a fav")
+                onNavigate(ScreensRoutes.UsersWithLikesScreen.route, ScreensRoutes.UsersWithLikesScreen.route)
             },
             modifier = Modifier.constrainAs(favoritesScreen) {
                 top.linkTo(mainScreen.top)
