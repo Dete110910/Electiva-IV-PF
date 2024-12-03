@@ -84,7 +84,7 @@ class SingUpViewModel @Inject constructor(
             uiState.value.lastName,
             uiState.value.email,
             uiState.value.password,
-            ""
+            "https://firebasestorage.googleapis.com/v0/b/electiva-iv-593f3.firebasestorage.app/o/img_profile_photo.png?alt=media&token=5ca66a03-b215-4aca-8889-d65499a030db"
         )
         viewModelScope.launch {
             val uid = signUpUseCase.invoke(user.email, user.password)

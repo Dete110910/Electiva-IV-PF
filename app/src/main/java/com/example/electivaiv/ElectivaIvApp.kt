@@ -24,6 +24,7 @@ import com.example.electivaiv.ui.screens.login.LoginViewModel
 import com.example.electivaiv.ui.screens.main.HomeScreen
 import com.example.electivaiv.ui.screens.singup.SingUpScreen
 import com.example.electivaiv.ui.screens.topRestaurants.TopRestaurantsScreen
+import com.example.electivaiv.ui.screens.userProfile.UserProfileScreen
 import com.example.electivaiv.ui.screens.usersWithLikes.UsersWithLikesScreen
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 import kotlinx.serialization.encodeToString
@@ -124,6 +125,18 @@ fun MainNavigation(
             }
         }
 
+        composable(ScreensRoutes.UserProfileScreen.route) {
+            UserProfileScreen(
+                onNavigate = { route, popUp ->
+                    if (currentDestination?.destination?.route != route) {
+                        navController.navigate(route)
+                    } else {
+                        Log.d("TEST", "Estás navegando al mismo lado")
+                    }
+                }
+            )
+        }
+
         composable(
             route = "${ScreensRoutes.CommentDetail.route}/{comment}",
             arguments = listOf(navArgument("comment") { type = NavType.StringType })
@@ -149,7 +162,7 @@ fun MainNavigation(
             TopRestaurantsScreen(
                 onNavigate = { route, popUp ->
                     if (currentDestination?.destination?.route != route) {
-                        navController.navigate(route){
+                        navController.navigate(route) {
                             popUpTo(popUp) { inclusive = true }
                         }
                     } else {

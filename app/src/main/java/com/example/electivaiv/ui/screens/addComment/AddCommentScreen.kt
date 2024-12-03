@@ -167,10 +167,11 @@ fun AddCommentScreen(
             Button(
                 onClick = {
                     if (restaurantName.isNotBlank() && description.isNotBlank()) {
+                        val profilePhoto = addCommentViewModel.getProfilePhoto()
                         val newComment = PostComment(
                             "",
                             "",
-                            "",
+                            profilePhoto,
                             restaurantName,
                             rating.toDouble(),
                             description,

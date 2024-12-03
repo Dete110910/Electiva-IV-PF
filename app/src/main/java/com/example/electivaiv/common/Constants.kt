@@ -15,6 +15,8 @@ class Constants {
         const val UID = "uid"
         const val NAME = "name"
         const val PROFILE_PHOTO = "profilePhoto"
+        const val EMAIL = "email"
+        const val UNKNOWN_FIELD = "Propiedad no encontrada"
 
         //Messages
         const val TEST_MESSAGE = "TEST--"

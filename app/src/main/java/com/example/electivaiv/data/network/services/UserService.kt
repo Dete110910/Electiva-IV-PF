@@ -1,8 +1,11 @@
 package com.example.electivaiv.data.network.services
 
+import android.net.Uri
 import android.util.Log
 import com.example.electivaiv.common.Constants
+import com.example.electivaiv.common.Constants.Companion.EMAIL
 import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
+import com.example.electivaiv.common.Constants.Companion.UID
 import com.example.electivaiv.common.Constants.Companion.USERS_COLLECTION
 import com.example.electivaiv.common.Constants.Companion.USER_SUCCESSFULLY_REGISTERED_MESSAGE
 import com.example.electivaiv.common.Constants.Companion.USER_UNSUCCESSFULLY_REGISTERED_MESSAGE
@@ -11,6 +14,9 @@ import com.example.electivaiv.domain.model.User
 import com.example.electivaiv.domain.model.UserSP
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class UserService @Inject constructor(
     private val firebaseClient: FirebaseClient,
@@ -28,7 +34,6 @@ class UserService @Inject constructor(
             Log.d(TEST_MESSAGE, USER_SUCCESSFULLY_REGISTERED_MESSAGE)
         }.addOnFailureListener {
             Log.d(TEST_MESSAGE, USER_UNSUCCESSFULLY_REGISTERED_MESSAGE)
-
         }
     }
 
@@ -54,6 +59,82 @@ class UserService @Inject constructor(
             null
         }
     }
+
+    suspend fun getEmailFromCloud(value: String): String = suspendCoroutine { continuation ->
+        try {
+            firebaseClient.firestore.collection(USERS_COLLECTION)
+                .whereEqualTo(UID, value)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val email = querySnapshot.documents.firstOrNull()?.getString(EMAIL)
+                            ?: Constants.UNKNOWN_FIELD
+                        Log.d("TEST", "Correo es: $email")
+                        continuation.resume(email)
+                    } else {
+                        Log.d("TEST", "No se encontraron documentos")
+                        continuation.resume(Constants.UNKNOWN_FIELD)
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("TEST", "Error obteniendo el correo", exception)
+                    continuation.resumeWithException(exception)
+                }
+        } catch (e: Exception) {
+            Log.e("TEST", "Error inesperado", e)
+            continuation.resumeWithException(e)
+        }
+    }
+
+    suspend fun saveProfilePhoto(uri: Uri): String {
+        val storage = firebaseClient.store.reference
+        val reference = storage.child("${System.currentTimeMillis()}.jpg")
+        return suspendCoroutine { continuation ->
+            reference.putFile(uri)
+                .continueWithTask { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let { throw it }
+                    }
+                    reference.downloadUrl
+                }
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+                        Log.d(TEST_MESSAGE, "Register Successful image: ${downloadUri.toString()}")
+                        continuation.resume(downloadUri.toString())
+                    } else {
+                        Log.e(TEST_MESSAGE, "Failed to upload image", task.exception)
+                        continuation.resumeWithException(
+                            task.exception ?: Exception("Unknown error")
+                        )
+                    }
+                }
+        }
+    }
+
+    fun setProfilePhoto(uid: String, url: String) {
+        if (uid != "") {
+            firebaseClient.firestore.collection(USERS_COLLECTION).whereEqualTo("uid", uid).get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        for (document in querySnapshot.documents) {
+                            document.reference.update("profilePhoto", url).addOnSuccessListener {
+                                Log.d("TEST", "Foto de perfil actualizada correctamente")
+                            }.addOnSuccessListener {
+                                Log.d("TEST", "Error al actualizar la foto de perfil")
+                            }
+                        }
+                    } else {
+                        Log.d("TEST", "No se encontró usuarios con este uid")
+                    }
+                }.addOnFailureListener { e ->
+                    Log.d("TEST", "Error al recuperar el usuario", e)
+                }
+        } else {
+            Log.d("TEST", "Hubo un error en su registro. Inicie sesión nuevamente.")
+        }
+    }
+
 
     suspend fun getUsersByUids(uids: List<String>): List<User> {
         val users = mutableListOf<User>()
