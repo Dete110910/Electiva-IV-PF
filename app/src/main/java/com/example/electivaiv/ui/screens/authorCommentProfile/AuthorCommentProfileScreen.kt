@@ -44,6 +44,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.electivaiv.common.Constants.Companion.AVERAGE_RATING
+import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
 import com.example.electivaiv.common.composable.Footer
 import com.example.electivaiv.common.composable.Header
 import com.example.electivaiv.common.ext.authorCommentProfileCard
@@ -62,6 +63,14 @@ fun AuthorCommentProfileScreen(
     val uiState by authorCommentProfileViewModel.uiState.collectAsState()
     var rate by remember { mutableStateOf(0.0) }
     var isFav by remember { mutableStateOf(false) }
+
+    LaunchedEffect (comment.authorUid) {
+        Log.d(TEST_MESSAGE, "Comment author UID: ${comment.authorUid}")
+        authorCommentProfileViewModel.isAuthorLiked(comment.authorUid) { liked ->
+            isFav = liked
+        }
+    }
+
     val isAuthor = authorCommentProfileViewModel.verifyIsAuthor(comment.authorUid)
 
     authorCommentProfileViewModel.getCommentsByUser(comment.authorUid)
@@ -95,6 +104,11 @@ fun AuthorCommentProfileScreen(
                 isAuthor = isAuthor,
                 onChangeFav = {
                     isFav = !isFav
+                    if (isFav) {
+                        authorCommentProfileViewModel.addAuthorToFavorites(comment.authorUid)
+                    }else{
+                        authorCommentProfileViewModel.removeAuthorFromFavorites(comment.authorUid)
+                    }
                 }, modifier = Modifier.constrainAs(userInfoCard) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -168,6 +182,7 @@ fun UserInfoCard(
             Button(
                 onClick = {
                     onChangeFav(!isFav)
+
                 },
                 modifier = Modifier.constrainAs(favButton) {
                     top.linkTo(userName.top)
