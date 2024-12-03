@@ -34,4 +34,8 @@ class UserServiceSP @Inject constructor(
     fun verifyIsAuthor(uid: String): Boolean {
         return uid == sharedPreferences.sharedPreferences.getString(fieldCurrentUserUid, null)
     }
+    fun updateCurrentUserProfilePhoto(photoUrl: String){
+        sharedPreferences.editor.putString(fieldCurrentUserProfilePhoto, photoUrl)
+        sharedPreferences.editor.apply()
+    }
 }

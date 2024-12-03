@@ -3,7 +3,9 @@ package com.example.electivaiv.data.network.services
 import android.net.Uri
 import android.util.Log
 import com.example.electivaiv.common.Constants
+import com.example.electivaiv.common.Constants.Companion.EMAIL
 import com.example.electivaiv.common.Constants.Companion.TEST_MESSAGE
+import com.example.electivaiv.common.Constants.Companion.UID
 import com.example.electivaiv.common.Constants.Companion.USERS_COLLECTION
 import com.example.electivaiv.common.Constants.Companion.USER_SUCCESSFULLY_REGISTERED_MESSAGE
 import com.example.electivaiv.common.Constants.Companion.USER_UNSUCCESSFULLY_REGISTERED_MESSAGE
@@ -58,22 +60,34 @@ class UserService @Inject constructor(
         }
     }
 
-    suspend fun getUserInfoByParameter(value: String): String {
-        var response = ""
-        val firebaseResponse =
-            firebaseClient.firestore.collection(USERS_COLLECTION).whereEqualTo(value, value).get()
-                .await()
-        if (!firebaseResponse.isEmpty) {
-            firebaseResponse.documents.forEach { document ->
-                response = document.getString(value) ?: Constants.UNKNOWN_FIELD
-            }
+    suspend fun getEmailFromCloud(value: String): String = suspendCoroutine { continuation ->
+        try {
+            firebaseClient.firestore.collection(USERS_COLLECTION)
+                .whereEqualTo(UID, value)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val email = querySnapshot.documents.firstOrNull()?.getString(EMAIL)
+                            ?: Constants.UNKNOWN_FIELD
+                        Log.d("TEST", "Correo es: $email")
+                        continuation.resume(email)
+                    } else {
+                        Log.d("TEST", "No se encontraron documentos")
+                        continuation.resume(Constants.UNKNOWN_FIELD)
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("TEST", "Error obteniendo el correo", exception)
+                    continuation.resumeWithException(exception)
+                }
+        } catch (e: Exception) {
+            Log.e("TEST", "Error inesperado", e)
+            continuation.resumeWithException(e)
         }
-        return response
     }
 
     suspend fun saveProfilePhoto(uri: Uri): String {
         val storage = firebaseClient.store.reference
-        var responseUrl = ""
         val reference = storage.child("${System.currentTimeMillis()}.jpg")
         return suspendCoroutine { continuation ->
             reference.putFile(uri)

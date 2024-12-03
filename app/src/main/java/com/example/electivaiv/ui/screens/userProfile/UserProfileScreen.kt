@@ -1,12 +1,10 @@
 package com.example.electivaiv.ui.screens.userProfile
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -84,16 +81,15 @@ fun UserProfileScreen(
 
             LaunchedEffect(uiState.profilePhoto) {
                 if (uiState.profilePhoto.isNotEmpty()) {
-                    Log.d("TEST", "La foto en screen es: ${uiState.profilePhoto}")
                     userProfileViewModel.setProfilePhoto(uiState.profilePhoto)
                 }
             }
 
             Image(
                 painter = rememberAsyncImagePainter(
-                    model = if (uiState.profilePhoto.isEmpty()) userProfileViewModel.getUserProfilePhoto() else uiState.profilePhoto,
+                    model = uiState.profilePhoto.ifEmpty { userProfileViewModel.getUserProfilePhoto() },
 
-                ),
+                    ),
                 contentDescription = "Profile Photo",
                 modifier = Modifier
                     .constrainAs(profileImage) {
@@ -104,11 +100,11 @@ fun UserProfileScreen(
                     .size(80.dp)
                     .clip(
                         shape = CircleShape
-                    ).background(Color.Red)
+                    )
             )
 
             Text(
-                text = "Name",
+                text = userProfileViewModel.getUserLocalName(),
                 modifier = Modifier
                     .constrainAs(nameField) {
                         top.linkTo(profileImage.bottom, 15.dp)
@@ -123,7 +119,7 @@ fun UserProfileScreen(
             )
 
             Text(
-                text = "Email",
+                text = uiState.email.ifEmpty { "Loading email..." },
                 modifier = Modifier
                     .constrainAs(emailField) {
                         top.linkTo(nameField.bottom, 5.dp)

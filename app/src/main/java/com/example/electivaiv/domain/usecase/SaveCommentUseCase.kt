@@ -16,7 +16,7 @@ class SaveCommentUseCase @Inject constructor(
         return dataBaseService.saveComment(comment)
     }
 
-    suspend fun saveImages(uris: List<Uri>): MutableList<String> {
+    suspend fun saveImages(uris: List<Uri>): List<String> {
         return dataBaseService.saveImages(uris)
     }
 }

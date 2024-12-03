@@ -83,6 +83,7 @@ class DataBaseService @Inject constructor(
             val commentData = hashMapOf(
                 "authorName" to comment.authorName,
                 "authorUid" to comment.authorUid,
+                "authorProfilePhoto" to comment.authorProfilePhoto,
                 "images" to comment.images,
                 "rate" to comment.rate,
                 "restaurantName" to comment.restaurantName,
@@ -97,33 +98,23 @@ class DataBaseService @Inject constructor(
         }
     }
 
-    suspend fun saveImages(uris: List<Uri>): MutableList<String> {
+    suspend fun saveImages(uris: List<Uri>): List<String> {
         val storage = firebaseClient.store.reference
-        val urlList = mutableListOf<String>()
-        uris.forEach { uri ->
-            val reference = storage.child("${System.currentTimeMillis()}.jpg")
-            val uploadTask = reference.putFile(uri)
-            uploadTask.continueWithTask { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
-                    }
-                }
-                reference.downloadUrl
-            }.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val downloadUri = task.result
-                    urlList.add(downloadUri.toString())
-                    Log.d(TEST_MESSAGE, "Register Successful image")
-                } else {
-                    Log.d(TEST_MESSAGE, "Register NOT Successful")
-                }
-            }.await()
+        return uris.mapNotNull { uri ->
+            try {
+                val reference = storage.child("${System.currentTimeMillis()}.jpg")
+                // Subir el archivo
+                reference.putFile(uri).await()
+                // Obtener la URL de descarga
+                reference.downloadUrl.await().toString()
+            } catch (e: Exception) {
+                Log.e(TEST_MESSAGE, "Error al registrar la imagen: ${e.message}", e)
+                null // Ignorar esta URI si hubo un error
+            }
         }
-        return urlList
     }
 
-    suspend fun getCommentsByAuthor(uid: String): List<PostComment> {
+    suspend fun getCommentsByAuthor(uid: String): MutableList<PostComment> {
         var commentsList = mutableListOf<PostComment>()
         val response =
             firebaseClient.firestore.collection(Constants.COMMENTS_COLLECTION)

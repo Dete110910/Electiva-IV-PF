@@ -25,7 +25,7 @@ class AddCommentViewModel @Inject constructor(
     }
 
     fun saveImages(uris: List<Uri>) {
-        viewModelScope.launch { images.value = saveCommentUseCase.saveImages(uris) }
+        viewModelScope.launch { images.value = saveCommentUseCase.saveImages(uris).toMutableList() }
     }
 
     fun getProfilePhoto(): String {

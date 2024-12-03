@@ -11,5 +11,6 @@ class SetUserProfilePhotoUseCase @Inject constructor(
     fun invoke(url: String) {
         val uid = userServiceSP.getCurrentUserUid() ?: ""
         userService.setProfilePhoto(uid, url)
+        userServiceSP.updateCurrentUserProfilePhoto(url)
     }
 }

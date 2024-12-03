@@ -1,7 +1,6 @@
 package com.example.electivaiv.ui.screens.userProfile
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.electivaiv.domain.usecase.GetUserInfoByParameterUseCase
@@ -28,6 +27,10 @@ class UserProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UserProfileUiState())
     val uiState: StateFlow<UserProfileUiState> = _uiState.asStateFlow()
 
+    init {
+        getEmailFromCloud()
+    }
+
     fun getUserProfilePhoto(): String {
         return getUserProfilePhotoUseCase.invoke()
     }
@@ -36,9 +39,12 @@ class UserProfileViewModel @Inject constructor(
         return getUserLocalNameUseCase.invoke()
     }
 
-    fun getUserInfoByParameter(value: String) {
+    fun getEmailFromCloud() {
         viewModelScope.launch {
-            getUserInfoByParameterUseCase.invoke(value)
+            _uiState.value = _uiState.value.copy(
+                email =
+                getUserInfoByParameterUseCase.invoke()
+            )
         }
     }
 
@@ -48,8 +54,6 @@ class UserProfileViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 profilePhoto = response
             )
-            Log.d("TEST", "Foto actualizada: $response")
-            Log.d("TEST", uiState.toString())
         }
     }
 
