@@ -24,6 +24,7 @@ import com.example.electivaiv.ui.screens.login.LoginViewModel
 import com.example.electivaiv.ui.screens.main.HomeScreen
 import com.example.electivaiv.ui.screens.singup.SingUpScreen
 import com.example.electivaiv.ui.screens.topRestaurants.TopRestaurantsScreen
+import com.example.electivaiv.ui.screens.userProfile.UserProfileScreen
 import com.example.electivaiv.ui.screens.usersWithLikes.UsersWithLikesScreen
 import com.example.electivaiv.ui.theme.ElectivaIVTheme
 import kotlinx.serialization.encodeToString
