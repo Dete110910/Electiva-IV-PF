@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.electivaiv.domain.model.PostComment
+import com.example.electivaiv.domain.usecase.GetUserProfilePhotoUseCase
 import com.example.electivaiv.domain.usecase.SaveCommentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddCommentViewModel @Inject constructor(
     private val saveCommentUseCase: SaveCommentUseCase,
+    private val getUserProfilePhotoUseCase: GetUserProfilePhotoUseCase
 ) : ViewModel() {
 
     var images = mutableStateOf(mutableListOf<String>())
@@ -24,6 +26,10 @@ class AddCommentViewModel @Inject constructor(
 
     fun saveImages(uris: List<Uri>) {
         viewModelScope.launch { images.value = saveCommentUseCase.saveImages(uris) }
+    }
+
+    fun getProfilePhoto(): String {
+        return getUserProfilePhotoUseCase.invoke()
     }
 
 }

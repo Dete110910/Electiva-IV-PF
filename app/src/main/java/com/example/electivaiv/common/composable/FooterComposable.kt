@@ -73,7 +73,7 @@ fun Footer(
 
         Button(
             onClick = {
-                //onNavigate(ScreensRoutes.TopRestaurantsScreen.route, ScreensRoutes.TopRestaurantsScreen.route)
+                onNavigate(ScreensRoutes.UserProfileScreen.route, ScreensRoutes.UserProfileScreen.route)
                 Log.d("TEST", "Presionando a profile")
             },
             modifier = Modifier.constrainAs(profileScreen) {
