@@ -2,22 +2,22 @@
     <string name="app_name">ElectivaIV</string>
 
     <!-- Sing Up -->
-    <string name="create_account">Create account</string>
-    <string name="user_name">Name</string>
-    <string name="user_last_name">Last name</string>
+    <string name="create_account">Crear Cuenta</string>
+    <string name="user_name">Nombre</string>
+    <string name="user_last_name">Apellido</string>
 
 
     <!-- Login -->
-    <string name="login">Login</string>
-    <string name="register">Register</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="register">Registrarse</string>
 
 
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="confirm_password">Confirm Password</string>
+    <string name="email">Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="confirm_password">Confirmar Contraseña</string>
 
     <!-- General -->
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Cancelar</string>
 
 
 </resources>
